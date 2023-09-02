@@ -25,6 +25,10 @@ re for regular expressions.
 pandas for data manipulation and CSV generation.
 base64 for encoding the Feedly filter.
 
+## Example, Pakistan Threat actors
+![image](https://github.com/AlbertL7/The-PoorMans-Cyber-Threat-Feed/assets/71300144/96700923-2a5e-4a2b-a679-645f5a1c1207)
+
+
 💡 Use Case:
 Perfect for cybersecurity professionals, threat intelligence analysts, or anyone keen on gaining insights into the cyber threat landscape of specific countries without investing in costly threat feeds.
 
