@@ -23,9 +23,9 @@ Perfect for cybersecurity professionals, threat intelligence analysts, or anyone
 
 🔗 How To Use:
 
-Clone the repository.
-Ensure you have the required modules installed.
-Run the script.
-Enter the two-letter country code.
-Wait as it gathers the threat actors, their aliases, and constructs your Feedly Pro+ filter URL.
-Use the generated URL to keep an eye on mentions and activities related to the listed threat actors.
+- Clone the repository.
+- Ensure you have the required modules installed.
+- Run the script.
+- Enter the two-letter country code.
+- Wait as it gathers the threat actors, their aliases, and constructs your Feedly Pro+ filter URL.
+- Use the generated URL to keep an eye on mentions and activities related to the listed threat actors in feedly.
