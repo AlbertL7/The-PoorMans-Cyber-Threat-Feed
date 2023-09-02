@@ -25,10 +25,6 @@ re for regular expressions.
 pandas for data manipulation and CSV generation.
 base64 for encoding the Feedly filter.
 
-## Example, Pakistan Threat actors
-![image](https://github.com/AlbertL7/The-PoorMans-Cyber-Threat-Feed/assets/71300144/96700923-2a5e-4a2b-a679-645f5a1c1207)
-
-
 💡 Use Case:
 Perfect for cybersecurity professionals, threat intelligence analysts, or anyone keen on gaining insights into the cyber threat landscape of specific countries without investing in costly threat feeds.
 
@@ -40,3 +36,12 @@ Perfect for cybersecurity professionals, threat intelligence analysts, or anyone
 - Enter the two-letter country code.
 - Wait as it gathers the threat actors, their aliases, and constructs your Feedly Pro+ filter URL.
 - Use the generated URL to keep an eye on mentions and activities related to the listed threat actors in feedly.
+  
+## Example, Pakistan Threat actors
+![image](https://github.com/AlbertL7/The-PoorMans-Cyber-Threat-Feed/assets/71300144/96700923-2a5e-4a2b-a679-645f5a1c1207)
+
+## Example, After entering generated URL for Feedly
+![image](https://github.com/AlbertL7/The-PoorMans-Cyber-Threat-Feed/assets/71300144/3a9d3da2-4172-4d6f-aed2-1334f4abdc50)
+
+## Example, Feed View
+![image](https://github.com/AlbertL7/The-PoorMans-Cyber-Threat-Feed/assets/71300144/ba7ecbec-75b5-42a6-bee9-d0f635f8d5fa)
