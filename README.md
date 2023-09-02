@@ -45,3 +45,6 @@ Perfect for cybersecurity professionals, threat intelligence analysts, or anyone
 
 ## Example, Feed View
 ![image](https://github.com/AlbertL7/The-PoorMans-Cyber-Threat-Feed/assets/71300144/ba7ecbec-75b5-42a6-bee9-d0f635f8d5fa)
+
+## Example, CSV file created
+![image](https://github.com/AlbertL7/The-PoorMans-Cyber-Threat-Feed/assets/71300144/9f9042bc-c532-4e86-87d7-f80348bc68d1)
