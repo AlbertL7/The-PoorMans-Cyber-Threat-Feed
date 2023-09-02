@@ -1,6 +1,8 @@
 # The PoorMans Cyber Threat Feed
 
 ## Future Updates to project
+
+- Update script to check if country csv file already exists, if the csv file already exists, continue scraping but compare results to current csv file and append new results with not duplicates.
 - I plan on writing a script to fetch the top 200 latest malware strains to put into a feedly filter
 - I also plan on writng a script to scrape yara rules to be implemented into a SIEM
 
