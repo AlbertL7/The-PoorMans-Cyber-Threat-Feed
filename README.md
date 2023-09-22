@@ -6,7 +6,7 @@ When integrated with Feedly, this tool aids in building a comprehensive threat i
 
 The intended use is to run these programs probably once a week to get a comprehensive overview of the latest threat actors and malware. This will enable you to update the Feedly filter as needed or perform VirusTotal retro hunts based on the yara rules found for the malware you are investigaing.  
 
-# Malware Threat Intel Builder
+# Malware Hunter
 
 ## Overview
 
@@ -74,7 +74,7 @@ Install the required libraries:
 
 Feel free to fork the project and submit pull requests for any enhancements or bug fixes. If you encounter any issues or have suggestions for improvements, please open an issue in the repository.
 
-# Scrape Threat Actors
+# ATP Hunter
 
 ## Future Updates to project
 
