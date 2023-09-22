@@ -10,7 +10,7 @@ The intended use is to run these programs probably once a week to get a comprehe
 
 ## Overview
 
-The Malware Threat Intel Builder is a Python-based tool designed to gather and analyze information about malware from various sources. It integrates with Feedly to provide AI feeds in Pro+ and uses Malpedia for information retrieval. The tool is capable of querying malware data, displaying descriptions, and showing Yara rules for selected malware. It also provides options to create Feedly filters in both URL encoded and clear text formats. 
+The Malware Hunter app is a Python-based tool designed to gather and analyze information about malware from various sources. It integrates with Feedly to provide AI feeds in Pro+ and uses Malpedia for information retrieval. The tool is capable of querying malware data, displaying descriptions, and showing Yara rules for selected malware. It also provides options to create Feedly filters in both URL encoded and clear text formats. 
 
 ## Features
 
