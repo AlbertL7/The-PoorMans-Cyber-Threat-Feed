@@ -77,7 +77,7 @@ Feel free to fork the project and submit pull requests for any enhancements or b
 ## Use Case Example 1 Get top 15 most recent malware and create feedly filter
 ![image](https://github.com/AlbertL7/The-PoorMans-Cyber-Threat-Feed/assets/71300144/c290bb15-a63b-456e-bc95-12f40ec252a9)
 
-## Use Case Example 2 grap yara rule and description for VirusTotal retro hunt. If the malware has more than one yara rule, all yara rules will be displayed. 
+## Use Case Example 2 grab yara rule and description for VirusTotal retro hunt. If the malware has more than one yara rule, all yara rules will be displayed. 
 ![image](https://github.com/AlbertL7/The-PoorMans-Cyber-Threat-Feed/assets/71300144/78aff5aa-48ba-4d6f-a842-0a1497839edb)
 
 ## Use Case Example 3 quickly query all yara and descriptions from originally grabbed malware from "get_malware"
