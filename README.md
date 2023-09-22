@@ -10,7 +10,7 @@ The intended use is to run these programs probably once a week to get a comprehe
 
 ## Overview
 
-The Malware Threat Intel Builder is a Python-based tool designed to gather and analyze information about malware from various sources. It integrates with Feedly to provide AI feeds in Pro+ and uses Malpedia for information retrieval. The tool is capable of querying malware data, displaying descriptions, and showing Yara rules for selected malware. It also provides options to create Feedly filters in both URL encoded and clear text formats.
+The Malware Threat Intel Builder is a Python-based tool designed to gather and analyze information about malware from various sources. It integrates with Feedly to provide AI feeds in Pro+ and uses Malpedia for information retrieval. The tool is capable of querying malware data, displaying descriptions, and showing Yara rules for selected malware. It also provides options to create Feedly filters in both URL encoded and clear text formats. 
 
 ## Features
 
@@ -73,6 +73,15 @@ Install the required libraries:
 ## Contribution
 
 Feel free to fork the project and submit pull requests for any enhancements or bug fixes. If you encounter any issues or have suggestions for improvements, please open an issue in the repository.
+
+## Use Case Example 1 Get top 15 most recent malware and create feedly filter
+![image](https://github.com/AlbertL7/The-PoorMans-Cyber-Threat-Feed/assets/71300144/c290bb15-a63b-456e-bc95-12f40ec252a9)
+
+## Use Case Example 2 grap yara rule and description for VirusTotal retro hunt. If the malware has more than one yara rule, all yara rules will be displayed. 
+![image](https://github.com/AlbertL7/The-PoorMans-Cyber-Threat-Feed/assets/71300144/78aff5aa-48ba-4d6f-a842-0a1497839edb)
+
+## Use Case Example 3 quickly query all yara and descriptions from originally grabbed malware from "get_malware"
+![image](https://github.com/AlbertL7/The-PoorMans-Cyber-Threat-Feed/assets/71300144/bf532a9d-a696-4e30-8087-d970c2a921ca)
 
 
 ***
