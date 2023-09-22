@@ -1,5 +1,81 @@
 # The PoorMans Cyber Threat Feed
 
+Harness the power of open-source intelligence by leveraging this script to automatically scrape and curate a list of cyber threat actors and the latest Malware. Designed to tap into the vast data pool of malpedia.caad.fkie.fraunhofer.de.
+
+When integrated with Feedly, this tool aids in building a comprehensive threat intelligence database by collecting the latest Indicators of Compromise (IoCs), Tactics, Techniques, and Procedures (TTPs), and vulnerabilities from open-source intelligence performed by the latest threat acotors. This enables organizations and individuals to stay informed about emerging threats and enhance their security posture by proactively addressing potential vulnerabilities.
+
+The intended use is to run these programs probably once a week to get a comprehensive overview of the latest threat actors and malware. This will enable you to update the Feedly filter as needed or perform VirusTotal retro hunts based on the yara rules found for the malware you are investigaing.  
+
+# Malware Threat Intel Builder
+
+## Overview
+
+The Malware Threat Intel Builder is a Python-based tool designed to gather and analyze information about malware from various sources. It integrates with Feedly to provide AI feeds in Pro+ and uses Malpedia for information retrieval. The tool is capable of querying malware data, displaying descriptions, and showing Yara rules for selected malware. It also provides options to create Feedly filters in both URL encoded and clear text formats.
+
+## Features
+
+- Malware Querying: Allows users to query a specific amount of malware, displayed from newest to oldest.
+- Description Display: Provides detailed descriptions for the selected malware.
+- Yara Rule Display: Shows Yara rules for selected malware.
+- Feedly Filter Creation: Generates Feedly filters in URL encoded and clear text formats.
+- Silent Mode: Suppresses default output.
+- User-Agent Randomization: Uses different user agents for making requests to avoid blocking.
+- Data Sorting: Sorts malware data based on the last updated date.
+- User Interaction: Allows users to select malware interactively and decide whether to continue exploring other malware.
+
+## Usage
+
+The tool can be run from the command line using various arguments to customize its behavior. Below are the available arguments:
+
+--get_malware <int>: Amount of Malware to Query, displayed from newest to oldest. Default is 10.
+--u: Generates an Encoded Feedly Filter URL.
+--ct: Generates a Feedly filter in clear text.
+--d: Displays the description for the selected malware.
+--y: Displays Yara rule(s) for selected malware.
+--s: Silent mode, suppresses default output. Valid only when --u, --ct, --d, or --y is used.
+
+## Example
+```
+python main.py --get_malware 5 --u --d
+This command will query the 5 newest malwares, generate an encoded Feedly filter URL, and display the description for the selected malware.
+```
+
+## Installation
+
+Clone the repository:
+
+`git clone <repository-url>`
+Navigate to the project directory:
+`cd <project-directory>`
+Install the required libraries:
+`pip install -r requirements.txt`
+## Dependencies
+
+- BeautifulSoup
+- Requests
+- Pandas
+- Base64
+- Datetime
+- Random
+- Sys
+- Argparse
+  
+## Functionality Overview
+
+1. main(): The main function parses command-line arguments and calls the appropriate functions based on the provided arguments.
+2. top_malware_strains(): Makes requests to Malpedia to get the top malware strains and returns sorted malware data.
+3. user_select_malware(): Allows the user to interactively select malware and calls functions to display descriptions or Yara rules based on user input.
+4. get_malware_description(): Retrieves and displays the description of the selected malware.
+5. get_malware_yara(): Retrieves and displays the Yara rule of the selected malware.
+6. URL_Encoded_feedly_filter(): Generates and prints the URL encoded Feedly filter.
+7. clear_text_feedly_filter(): Generates and prints the clear text Feedly filter.
+
+## Contribution
+
+Feel free to fork the project and submit pull requests for any enhancements or bug fixes. If you encounter any issues or have suggestions for improvements, please open an issue in the repository.
+
+# Scrape Threat Actors
+
 ## Future Updates to project
 
 - Update script to check if country csv file already exists, if the csv file already exists, continue scraping but compare results to current csv file and append new results with not duplicates.
