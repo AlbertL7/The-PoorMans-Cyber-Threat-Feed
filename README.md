@@ -46,18 +46,18 @@ Install the required libraries:
 
 ## Usage
 
-usage: malware_hunter.py [-h] [--get_malware] [--search  [...]] [--ef] [--cf] [--d] [--y] [--us] [--s]
+- usage: malware_hunter.py [-h] [--get_malware] [--search  [...]] [--ef] [--cf] [--d] [--y] [--us] [--s]
 
-options:
-  -h, --help        show this help message and exit
-  --get_malware     Amount of Malware to Query, displayed from newest to oldest.
-  --search  [ ...]  List of malware names to search for. Ex:"--search malware1 malware2 --d --y."
-  --ef              Encoded Feedly Filter URL from queried malware
-  --cf              Clear Text Feedly Filter from queried malware
-  --d               Display the description for the selected malware
-  --y               Display yara rule(s) for selected malware
-  --us              Select From queried maalware, meant to be used with --search, --d and or --y
-  --s               Silent mode, suppresses default output. Valid only when --ef, --cf, --d, or --y is used.
+- options:
+-  -h, --help        show this help message and exit
+-  --get_malware     Amount of Malware to Query, displayed from newest to oldest.
+-  --search  [ ...]  List of malware names to search for. Ex:"--search malware1 malware2 --d --y."
+-  --ef              Encoded Feedly Filter URL from queried malware
+-  --cf              Clear Text Feedly Filter from queried malware
+-  --d               Display the description for the selected malware
+-  --y               Display yara rule(s) for selected malware
+-  --us              Select From queried maalware, meant to be used with --search, --d and or --y
+-  --s               Silent mode, suppresses default output. Valid only when --ef, --cf, --d, or --y is used.
 
 If you use the "--search" argument without the "--d" or "--y" argument you will not get any description or yara information but you will get the name, last updated, and family link.
 
