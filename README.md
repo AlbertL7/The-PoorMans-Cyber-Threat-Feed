@@ -12,6 +12,26 @@ The intended use is to run these programs probably once a week to get a comprehe
 
 The Malware Hunter app is a Python-based tool designed to gather and analyze information about malware from various sources. It integrates with Feedly to provide AI feeds in Pro+ and uses Malpedia for information retrieval. The tool is capable of querying malware data, displaying descriptions, and showing Yara rules for selected malware. It also provides options to create Feedly filters in both URL encoded and clear text formats. 
 
+## Installation
+
+Clone the repository:
+
+`git clone <repository-url>`
+Navigate to the project directory:
+`cd <project-directory>`
+Install the required libraries:
+`pip install -r requirements.txt`
+## Dependencies
+
+- BeautifulSoup
+- Requests
+- Pandas
+- Base64
+- Datetime
+- Random
+- Sys
+- Argparse
+  
 ## Features
 
 - Malware Querying: Allows users to query a specific amount of malware, displayed from newest to oldest.
@@ -333,26 +353,7 @@ rule win_ariabody_auto {
 
 [+] Enter the number corresponding to the malware you want to explore:
 ```
-## Installation
 
-Clone the repository:
-
-`git clone <repository-url>`
-Navigate to the project directory:
-`cd <project-directory>`
-Install the required libraries:
-`pip install -r requirements.txt`
-## Dependencies
-
-- BeautifulSoup
-- Requests
-- Pandas
-- Base64
-- Datetime
-- Random
-- Sys
-- Argparse
-  
 ## Functionality Overview
 
 1. main(): The main function parses command-line arguments and calls the appropriate functions based on the provided arguments.
