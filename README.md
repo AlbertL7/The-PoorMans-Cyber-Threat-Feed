@@ -107,7 +107,7 @@ https://feedly.com/i/powerSearch/in?options=eyJsYXllcnMiOlt7InBhcnRzIjpbeyJ0eXBl
 ```
 ## Example Output of the second Example command
 ```
-PS C:\Users\HOUSE-OF-L\Documents\Coding\VS Code\Web Scraping\Feedly_Filter_Create> python3 .\malware_hunter.py --us --d --y --search darkgate comebacker aria-body --ef --cf --get_malware 20 --s --o test.txt
+PS C:\Users\HOUSE-OF-L\Documents\Coding\VS Code\Web Scraping\Feedly_Filter_Create> python3 .\malware_hunter.py --us --d --y --search darkgate comebacker aria-body --ef --cf --get_malware 20 --s
 
 *******************************
 *  Encoded Feedly Filter URL  *
