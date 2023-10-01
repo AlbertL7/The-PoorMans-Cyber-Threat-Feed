@@ -65,13 +65,13 @@ If you use the "--search" argument without the "--d" or "--y" argument you will 
 #### 1
 ```
 python3 malware_hunter.py --get_malware 5 --ef --d
-This command will query the 5 newest malwares, generate an encoded Feedly filter URL, and display a list of malware that is queried, depending on the malware you select a description will be displayed.
 ```
+- This command will query the 5 newest malwares, generate an encoded Feedly filter URL, and display a list of malware that is queried, depending on the malware you select a description will be displayed.
 #### 2
 ```
 python .\malware_hunter.py --us --d --y --search darkgate comebacker aria-body --ef --cf --get_malware 20 --s
-This command will display the encoded feedly filter, clear text feedly filter, then query the malware you entered into the "--search" argument for the description and yara rule. Then enter into a user prompt asking if you would like to continue if "y" then a list of the output of the queried 20 values will be displayed. This will give you the option to select the corresponding number to display the yara rule or descrtion.
 ```
+- This command will display the encoded feedly filter, clear text feedly filter, then query the malware you entered into the "--search" argument for the description and yara rule. Then enter into a user prompt asking if you would like to continue if "y" then a list of the output of the queried 20 values will be displayed. This will give you the option to select the corresponding number to display the yara rule or descrtion.
 ## Example Output of the second Example command
 ```
 PS C:\Users\HOUSE-OF-L\Documents\Coding\VS Code\Web Scraping\Feedly_Filter_Create> python3 .\malware_hunter.py --us --d --y --search darkgate comebacker aria-body --ef --cf --get_malware 20 --s --o test.txt
