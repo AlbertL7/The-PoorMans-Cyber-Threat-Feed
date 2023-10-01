@@ -72,6 +72,39 @@ python3 malware_hunter.py --get_malware 5 --ef --d
 python .\malware_hunter.py --us --d --y --search darkgate comebacker aria-body --ef --cf --get_malware 20 --s
 ```
 - This command will display the encoded feedly filter, clear text feedly filter, then query the malware you entered into the "--search" argument for the description and yara rule. Then enter into a user prompt asking if you would like to continue if "y" then a list of the output of the queried 20 values will be displayed. This will give you the option to select the corresponding number to display the yara rule or descrtion. The default output will also be silenced and will not display on the screen.
+
+## Example Output of first Example command
+```
+PS C:\Users\HOUSE-OF-L\Documents\Coding\VS Code\Web Scraping\Feedly_Filter_Create> python3 malware_hunter.py --get_malware 5 --ef --d 
+
+*******************************
+*      New Malware Data       *
+*******************************
+
+Malware: 4h_rat ---> Last Updated: 2023-09-29 ---> Family Link: https://malpedia.caad.fkie.fraunhofer.de/details/win.4h_rat
+Malware: Aria-body ---> Last Updated: 2023-09-29 ---> Family Link: https://malpedia.caad.fkie.fraunhofer.de/details/win.ariabody
+Malware: Brute Ratel C4 ---> Last Updated: 2023-09-29 ---> alt_names: BruteRatel ---> Family Link: https://malpedia.caad.fkie.fraunhofer.de/details/win.brute_ratel_c4
+Malware: ComeBacker ---> Last Updated: 2023-09-29 ---> Family Link: https://malpedia.caad.fkie.fraunhofer.de/details/win.comebacker
+Malware: HijackLoader ---> Last Updated: 2023-09-29 ---> Family Link: https://malpedia.caad.fkie.fraunhofer.de/details/win.hijackloader
+
+*******************************
+*  Encoded Feedly Filter URL  *
+*******************************
+
+https://feedly.com/i/powerSearch/in?options=eyJsYXllcnMiOlt7InBhcnRzIjpbeyJ0eXBlIjoiY3VzdG9tS2V5d29yZCIsInRleHQiOiI0aF9yYXQifSx7InRleHQiOiJBcmlhLWJvZHkifSx7InRleHQiOiJCcnV0ZSBSYXRlbCBDNCJ9LHsidGV4dCI6IkNvbWVCYWNrZXIifSx7InRleHQiOiJIaWphY2tMb2FkZXIifV0sInNhbGllbmNlIjoibWVudGlvbiIsInNlYXJjaEhpbnQiOiIiLCJ0eXBlIjoibWF0Y2hlcyJ9XSwiYnVuZGxlcyI6W119
+
+*******************************
+*       Select Malware        *
+*******************************
+
+1. Malware: 4h_rat
+2. Malware: Aria-body
+3. Malware: Brute Ratel C4
+4. Malware: ComeBacker
+5. Malware: HijackLoader
+
+[+] "Y" to continue or "N" to exit:
+```
 ## Example Output of the second Example command
 ```
 PS C:\Users\HOUSE-OF-L\Documents\Coding\VS Code\Web Scraping\Feedly_Filter_Create> python3 .\malware_hunter.py --us --d --y --search darkgate comebacker aria-body --ef --cf --get_malware 20 --s --o test.txt
