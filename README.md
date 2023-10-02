@@ -513,6 +513,9 @@ Save Individually:
 
 ## Future Updates
 - Integrate With MITRE framework to extract TTP's
+- Integrate Virus Total API for quick SHA256 resolution when only SHA1 or MD5 is provided
+- Get rid of File Extension matching or make it an option to match file extensions.
+- Get rid of email matching or make it an option to match emails
 
 ## Contribution:
 Feel free to fork this repository, create a feature branch, and submit a pull request if you have any enhancements or features to add to this tool.
