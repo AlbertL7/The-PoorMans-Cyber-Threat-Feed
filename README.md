@@ -480,7 +480,7 @@ This application doesn’t require any special installation steps or additional 
 
 ## Usage:
 
-- In the image below I found an article in my feedly AI string matching search I created using the ATP_hunter.py and Malware_hunter.py applications. I then opened the article and copied the entire thing and pated it in the IOC extractor which pulled out all the IOC's mentioned in the article and highlighed the matching for quick review. From here you can perform threat hunts in your environment or store for future reference in your database. 
+- In the image below I found an article in my feedly AI string matching search I created using the ATP_hunter.py and Malware_hunter.py applications. I then opened the article and copied the entire thing and pasted it in the IOC extractor which pulled out all the IOC's mentioned in the article and highlighed the matching for quick review. From here you can perform threat hunts in your environment or store for future reference in your database. 
 
 ![image](https://github.com/AlbertL7/The-PoorMans-Cyber-Threat-Feed/assets/71300144/bfdc5513-75df-4869-b8eb-354c4a58c64b)
 
