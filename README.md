@@ -414,13 +414,7 @@ Feel free to fork the project and submit pull requests for any enhancements or b
 ***
 ***
 
-# ATP Hunter
-
-## Future Updates to project
-
-- Update script to check if country csv file already exists, if the csv file already exists, continue scraping but compare results to current csv file and append new results with not duplicates.
-- I plan on writing a script to fetch the top 200 latest malware strains to put into a feedly filter
-- I also plan on writng a script to scrape yara rules to be implemented into a SIEM
+# APT Hunter
 
 ## Breif overview 
 Harness the power of open-source intelligence by leveraging this script to automatically scrape and curate a list of cyber threat actors based on specified countries. Designed to tap into the vast data pool of malpedia.caad.fkie.fraunhofer.de, it retrieves a list of actors, their respective aliases, and constructs a custom filter URL for Feedly Pro+.
@@ -464,3 +458,66 @@ Perfect for cybersecurity professionals, threat intelligence analysts, or anyone
 
 ## Example, CSV file created
 ![image](https://github.com/AlbertL7/The-PoorMans-Cyber-Threat-Feed/assets/71300144/9f9042bc-c532-4e86-87d7-f80348bc68d1)
+***
+***
+# IOCExtractor
+
+## Description:
+This application is meant for the purpose of pulling out IOC's from articles found on the internet to reduce manual searching through the article for IOC's. Practicle use is to copy and paste the entire article ((select all)CTRL^A --> (copy selection)CTRL^C --> (paste selection)CTRL^V). The application will highlight all IOC's found in the article once the Parce IOC button is pressed which makes for easy review in case in IOC's were missed.
+
+## Requirements:
+plaintext
+Copy code
+Python 3.x
+Tkinter
+re (regular expressions module in Python)
+
+## Installation:
+This application doesn’t require any special installation steps or additional packages besides the standard libraries included with Python. However, Python needs to be installed on your machine. You can download it from the official Python website.
+
+## Usage:
+Run the IOCExtractor.py file in a Python environment:
+
+Users can input text in the upper text box to be parsed.
+
+## Parse IOCs:
+
+Users can press the “Parse IOCs” button to highlight and extract IOCs present in the entered text.
+Extracted IOCs will be displayed in the lower text box and will not be defanged.
+
+## Review Extracted IOCs:
+
+- Users can review extracted IOCs in the lower read-only ScrolledText widget.
+Defang IOCs:
+- Users can press the “Defang IOCs” button to defang the IOCs displayed in the review section.
+Save all IOCs:
+- Users can press the “Save all IOCs” button to save all extracted IOCs to a specified file.
+Save Individually:
+- Users can press the “Save Individually” button to save the extracted IOCs individually in a newly created folder within a specified directory.
+  
+## Code Structure:
+- Regular Expressions (regexes):
+  - Defined for different types of IOCs.
+- Class IOCExtractor:
+  - __init__(self): Initializes the main GUI components.
+  - refang(self, value: str) -> str: Converts defanged IOCs back to their original form.
+  - defang(self, value: str) -> str: Defangs IOCs to neutralize them.
+  - is_filename(self, candidate: str) -> bool: Checks if a string is a filename.
+  - parse_iocs(self): Parses and highlights the IOCs present in the input text and displays them in the review section.
+  - defang_iocs(self): Defangs the IOCs displayed in the review section.
+  - save_iocs(self): Saves all extracted IOCs to a specified file.
+  - save_iocs_to_folder(self): Saves the extracted IOCs individually to specified files within a newly created folder.
+  - 
+## Contribution:
+Feel free to fork this repository, create a feature branch, and submit a pull request if you have any enhancements or features to add to this tool.
+
+## License:
+This project is open-source, feel free to use, modify and distribute the code considering the proper attributions to the original creator.
+
+Credits:
+Developed by AlbertL7 with help from ChatGPT4
+
+Notes to Users:
+- Ensure Python is correctly installed and configured on your system.
+- Familiarity with IOCs and their different types is recommended for effective usage.
+- If any bugs are found or enhancements are needed, feel free to open an issue or submit a pull request.
