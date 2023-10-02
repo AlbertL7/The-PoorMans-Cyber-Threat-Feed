@@ -1,10 +1,13 @@
 # The PoorMans Cyber Threat Feed
 
-Harness the power of open-source intelligence by leveraging this script to automatically scrape and curate a list of cyber threat actors and the latest Malware. Designed to tap into the vast data pool of malpedia.caad.fkie.fraunhofer.de.
+This tool automatically scrapes and curates a list of the latest cyber threat actors and malware from Malpedia, leveraging three modules: Malware Hunter, APT Hunter, and IOC Extractor to create a well-rounded threat intelligence feed.
 
-When integrated with Feedly, this tool aids in building a comprehensive threat intelligence database by collecting the latest Indicators of Compromise (IoCs), Tactics, Techniques, and Procedures (TTPs), and vulnerabilities from open-source intelligence performed by the latest threat acotors. This enables organizations and individuals to stay informed about emerging threats and enhance their security posture by proactively addressing potential vulnerabilities.
+Malware Hunter: Identifies and provides insights on the latest malware.
+APT Hunter: Focuses on capturing information on advanced, persistent threats.
+IOC Extractor: Quickly extracts vital Indicators of Compromise (IoCs).
+When Integrated into Feedly Pro+ AI string matching, it aggregates the most recent IoCs, Tactics, Techniques, Procedures (TTPs), and vulnerabilities, enabling users to stay informed and reinforce security defenses proactively.
 
-The intended use is to run these programs probably once a week to get a comprehensive overview of the latest threat actors and malware. This will enable you to update the Feedly filter as needed or perform VirusTotal retro hunts based on the yara rules found for the malware you are investigaing.  
+Recommended use is once a week to update Feedly filters or to perform VirusTotal retro hunts based on discovered YARA rules for the investigated malware. This tool aids organizations and individuals in enhancing their security posture by staying informed about emerging threats and addressing potential vulnerabilities promptly.  
 
 # Malware Hunter
 
