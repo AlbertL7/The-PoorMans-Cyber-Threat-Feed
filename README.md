@@ -507,7 +507,10 @@ Save Individually:
   - defang_iocs(self): Defangs the IOCs displayed in the review section.
   - save_iocs(self): Saves all extracted IOCs to a specified file.
   - save_iocs_to_folder(self): Saves the extracted IOCs individually to specified files within a newly created folder.
-  - 
+
+## Future Updates
+- Integrate With MITRE framework to extract TTP's
+
 ## Contribution:
 Feel free to fork this repository, create a feature branch, and submit a pull request if you have any enhancements or features to add to this tool.
 
