@@ -479,6 +479,11 @@ re (regular expressions module in Python)
 This application doesn’t require any special installation steps or additional packages besides the standard libraries included with Python. However, Python needs to be installed on your machine. You can download it from the official Python website.
 
 ## Usage:
+
+- In the image below I found an article in my feedly AI string matching search I created using the ATP_hunter.py and Malware_hunter.py applications. I then opened the article and copied the entire thing and pated it in the IOC extractor which pulled out all the IOC's mentioned in the article and highlighed the matching for quick review. From here you can perform threat hunts in your environment or store for future reference in your database. 
+
+![image](https://github.com/AlbertL7/The-PoorMans-Cyber-Threat-Feed/assets/71300144/bfdc5513-75df-4869-b8eb-354c4a58c64b)
+
 Run the IOCExtractor.py file in a Python environment:
 
 Users can input text in the upper text box to be parsed.
@@ -516,6 +521,7 @@ Save Individually:
 - Integrate Virus Total API for quick SHA256 resolution when only SHA1 or MD5 is provided
 - Get rid of File Extension matching or make it an option to match file extensions.
 - Get rid of email matching or make it an option to match emails
+- Add feature to add or remove parsed IOC's
 
 ## Contribution:
 Feel free to fork this repository, create a feature branch, and submit a pull request if you have any enhancements or features to add to this tool.
