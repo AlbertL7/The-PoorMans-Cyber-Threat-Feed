@@ -1,6 +1,6 @@
 # TLD's in the Domains key was pulled from https://data.iana.org/TLD/tlds-alpha-by-domain.txt
-# File Names does not catch files with spaces.
-# Domains does not capture SLD's correctly. "Example: example.uk.co ---> uk.co". 
+# File Names does not catch files with spaces correctly. Example: "test example.exe" ---> example.exe
+# Domains does not capture SLD's correctly. Example: "example.uk.co ---> uk.co". 
 # IPv6 does not catch all but does the job for now
 
 import re
