@@ -157,7 +157,7 @@ class IOCExtractor(tk.Tk):
 
         filtered_domains = {domain for domain in iocs['Domains'] if not re.match(r'^\d{1,3}\.\d{1,3}$', domain)}
         iocs['Domains'] = filtered_domains
-        filtered_url = {url for url in iocs['URLs'] if re.match(r'(?i)^(http|hxxp)s?://', url)}
+        filtered_url = {url for url in iocs['URLs'] if re.match(r'(?i)^(http|hxxp|ftp|sftp|hXXp|hXXps|https)s?://', url)}
         iocs['URLs'] = filtered_url
         iocs['Domains'] -= to_remove
         self.review_output.configure(state='normal')
