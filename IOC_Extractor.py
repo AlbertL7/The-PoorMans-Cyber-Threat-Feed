@@ -62,9 +62,11 @@ class IOCExtractor(tk.Tk):
 
     def refang(self, value: str) -> str:
         # Refang the defanged IPs and URLs
-        value = value.replace('[.]', '.')  # Refang IP
+        value = value.replace('[.]', '.')  
         value = value.replace('hxxp', 'http')
-        value = value.replace('hxxps', 'https')  # Refang URL
+        value = value.replace('hxxps', 'https')
+        value = value.replace('hXXp', 'http')
+        value = value.replace('hXXps', 'https')
         value = value.replace("[dot]", ".")
         value = value.replace("(dot)", ".")
         value = value.replace("[.]", ".")
