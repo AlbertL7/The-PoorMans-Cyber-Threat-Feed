@@ -11,6 +11,9 @@ import tkinter.messagebox
 import os
 from tkinter import scrolledtext
 
+SEPARATOR_DEFANGS = r"[\(\)\[\]{}<>\\]"
+END_PUNCTUATION = r"[\.\?>\"'\)!,}:;\u201d\u2019\uff1e\uff1c\]]*"
+
 regexes = { #catch IPv4 without defang
     'IPv4': re.compile(r'\b(25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)(?:\.|\[\.\])(25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)(?:\.|\[\.\])(25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)(?:\.|\[\.\])(25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)\b'),
     'IPv6': re.compile(r"\b(?:[a-f0-9]{1,4}:|:){2,7}(?:[a-f0-9]{1,4}|:)\b", re.IGNORECASE | re.VERBOSE),
