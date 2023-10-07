@@ -2,6 +2,7 @@
 # File Names does not catch files with spaces correctly. Example: "test example.exe" ---> example.exe
 # Domains does not capture SLD's correctly. Example: "example.uk.co ---> uk.co". 
 # IPv6 does not catch all but does the job for now
+# I do not think URLs that have b64 / url / or hex encodeing will get caught and URLs with a double "\\/" as well
 
 import re
 import tkinter as tk
