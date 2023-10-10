@@ -108,7 +108,7 @@ class IOCExtractor(tk.Tk):
         self.vt_results_output.configure(state='disable')
 
     #\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\Important\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\    
-    VIRUSTOTAL_API_KEY = ''
+    VIRUSTOTAL_API_KEY = '' # Enter your API Key Here
      #\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\Important\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
     def on_input(self, event):
