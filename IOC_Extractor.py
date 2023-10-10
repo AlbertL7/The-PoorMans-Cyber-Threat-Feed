@@ -4,6 +4,20 @@
 # IPv6 catches mostly everything but also will catch catches times
 # I do not think URLs that have b64 / url / or hex encodeing will get caught and URLs with a double "\\/" as well
 
+"""
+If Using a MAC, you must change the values in the VT frame so that the Buttons are clearly visable:
+
+# VirusTotal Frame buttons for MAC
+        self.vt_frame = tk.Frame(self)
+        self.vt_frame.place(relx=1.0, rely=1.0, x=-10, y=-27, anchor="se")
+        self.vt2_frame = tk.Frame(self)
+        self.vt2_frame.place(relx=1.0, rely=1.0, x=-130, y=-27, anchor="se")
+        self.vt3_frame = tk.Frame(self)
+        self.vt3_frame.place(relx=1.0, rely=1.0, x=-243, y=-27, anchor="se")
+        self.vt4_frame = tk.Frame(self)
+        self.vt4_frame.place(relx=1.0, rely=1.0, x=-370, y=-27, anchor="se")
+"""
+
 import re
 import time
 import base64
