@@ -5,10 +5,14 @@
 # I do not think URLs that have b64 / url / or hex encodeing will get caught and URLs with a double "\\/" as well
 
 import re
+import time
+import base64
+import requests
 import tkinter as tk
 import tkinter.filedialog
 import tkinter.simpledialog
 import tkinter.messagebox
+import tkinter.messagebox as messagebox
 import os
 from tkinter import scrolledtext
 
@@ -19,7 +23,7 @@ TLD = r"(?:com|org|top|ga|ml|info|cf|gq|icu|wang|live|cn|online|host|us|tk|fyi|b
 
 regexes = { #catch IPv4 without defang
     'IPv4': re.compile(r'\b(25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)(?:\.|\[\.\])(25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)(?:\.|\[\.\])(25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)(?:\.|\[\.\])(25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)\b'),
-    'IPv6': re.compile(r'(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))'),
+    'IPv6': re.compile(r'(?:[A-Fa-f0-9]{1,4}:){7}[A-Fa-f0-9]{1,4}|(?:[A-Fa-f0-9]{1,4}:){1,7}:|(?:[A-Fa-f0-9]{1,4}:){1,6}[A-Fa-f0-9]{1,4}|(?:[A-Fa-f0-9]{1,4}:){1,5}(?::[A-Fa-f0-9]{1,4}){1,2}|(?:[A-Fa-f0-9]{1,4}:){1,4}(?::[A-Fa-f0-9]{1,4}){1,3}|(?:[A-Fa-f0-9]{1,4}:){1,3}(?::[A-Fa-f0-9]{1,4}){1,4}|(?:[A-Fa-f0-9]{1,4}:){1,2}(?::[A-Fa-f0-9]{1,4}){1,5}|[A-Fa-f0-9]{1,4}:(?::[A-Fa-f0-9]{1,4}){1,6}|:(?::[A-Fa-f0-9]{1,4}){1,7}|::[A-Fa-f0-9]{1,4}|::|'),
     'Domains': re.compile((r"(?<![@a-zA-Z0-9._%+-])([a-zA-Z0-9\-]+(?:\.|\[\.\]){0})\b").format(TLD)),
     'Sub Domains': re.compile(r'(?<![@a-zA-Z0-9._%+-])(?:[a-zA-Z0-9](?:[a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?(?:\.|\[\.]))+[a-zA-Z0-9](?:[a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?(?:\.|\[\.])[a-zA-Z]{2,}'),
     'URLs': re.compile(r"([fhstu]\S\S?[px]s?(?::\/\/|:\\\\|\[:\]\/\/|\[:\/\/\]|:?__)(?:\x20|" + SEPARATOR_DEFANGS + r")*\w\S+?(?:\x20[\/\.][^\.\/\s]\S*?)*)(?=\s|[^\x00-\x7F]|$)", re.IGNORECASE | re.VERBOSE | re.UNICODE), 
@@ -40,28 +44,274 @@ class IOCExtractor(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("IOC Extractor")
-        self.geometry("1600x800")  # Adjusted the geometry to accommodate the new widget
-        self.article_input = scrolledtext.ScrolledText(self, wrap=tk.WORD, height=10)
+        self.iconbitmap('')
+        self.geometry("1600x800")
+        
+        # Article Input
+        self.article_input = scrolledtext.ScrolledText(self, wrap=tk.WORD, height=10, bg='light grey', fg='black')
         self.article_input.pack(expand=1, fill='both')
-        self.review_output = scrolledtext.ScrolledText(self, wrap=tk.WORD, height=10, bg='light yellow')
+        self.article_input.insert(tk.END, "Input Text Here...")
+        self.article_input.bind("<Key>", self.on_input)
+        self.article_input.bind("<Button-1>", self.on_input)
+        
+        # Review Output
+        self.review_output = scrolledtext.ScrolledText(self, wrap=tk.WORD, height=10, bg='Burlywood', fg='black')
         self.review_output.pack(expand=1, fill='both')
         self.review_output.insert(tk.END, "Extracted IOCs will be displayed here...")
-        self.review_output.configure(state='disable')  # Make it read-only
+        self.review_output.configure(state='disable')
         self.review_output.tag_configure("highlight", background="yellow")
-        self.parse_button = tk.Button(self, text="Parse IOCs", command=self.parse_iocs)
+        
+        # Buttons
+        self.parse_button = tk.Button(self, text="Parse IOCs", command=self.parse_iocs, fg='black', bg='green')
         self.parse_button.pack(side=tk.BOTTOM, fill='x')
-        self.defang_button = tk.Button(self, text="Defang IOCs", command=self.defang_iocs)
+        self.defang_button = tk.Button(self, text="Defang IOCs", command=self.defang_iocs, fg='black', bg='Light Sea Green')
         self.defang_button.pack(side=tk.RIGHT, fill='x')
-        self.save_button = tk.Button(self, text="Save Group", command=self.save_iocs)
+        self.save_button = tk.Button(self, text="Save Group", command=self.save_iocs, fg='black', bg='Light Sea Green')
         self.save_button.pack(side=tk.RIGHT, fill='x')
-        self.save_folder_button = tk.Button(self, text="Save Individually", command=self.save_iocs_to_folder)
+        self.save_folder_button = tk.Button(self, text="Save Individually", command=self.save_iocs_to_folder, fg='black', bg='Light Sea Green')
         self.save_folder_button.pack(side=tk.RIGHT, fill='x')
-        self.modify_iocs_button = tk.Button(self, text="Add IOC", command=self.add_ioc_to_category)
+        self.modify_iocs_button = tk.Button(self, text="Add IOC", command=self.add_ioc_to_category, fg='black', bg='Light Sea Green')
         self.modify_iocs_button.pack(side=tk.RIGHT, fill='x')
-        self.remove_ioc_button = tk.Button(self, text="Remove IOC", command=self.remove_ioc)
+        self.remove_ioc_button = tk.Button(self, text="Remove IOC", command=self.remove_ioc, fg='black', bg='Light Sea Green')
         self.remove_ioc_button.pack(side=tk.RIGHT, fill='x')
-        #self.file_extension_button = tk.Button(self, text="Identify File Extensions", command=self.identify_file_extensions)
-        #self.file_extension_button.pack(side=tk.RIGHT, fill='x')
+        
+        # VirusTotal Frame
+        self.vt_frame = tk.Frame(self)
+        self.vt_frame.place(relx=1.0, rely=1.0, x=-10, y=-27, anchor="se")
+        self.vt2_frame = tk.Frame(self)
+        self.vt2_frame.place(relx=1.0, rely=1.0, x=-95, y=-27, anchor="se")
+        self.vt3_frame = tk.Frame(self)
+        self.vt3_frame.place(relx=1.0, rely=1.0, x=-170, y=-27, anchor="se")
+        self.vt4_frame = tk.Frame(self)
+        self.vt4_frame.place(relx=1.0, rely=1.0, x=-260, y=-27, anchor="se")
+
+        # VT Button inside VT Frame
+        self.vt_button = tk.Button(self.vt_frame, text="VT URL Check", command=self.on_vt_button_click, fg='black', bg='Light Sea Green')
+        self.vt_button.pack(pady=10)
+
+        # VT Submit for Analysis
+        self.submit_url_button = tk.Button(self.vt2_frame, text="VT URL Scan", command=self.submit_url_for_analysis, fg='black', bg='Light Sea Green')
+        self.submit_url_button.pack(pady=10)
+        
+        #VT Analyze Hahs
+        self.submit_hash_button = tk.Button(self.vt3_frame, text="VT Hash Check", command=self.submit_hash_for_analysis, fg='black', bg='Light Sea Green')
+        self.submit_hash_button.pack(pady=10)
+
+        #VT get all hashes
+        self.all_hashes_button = tk.Button(self.vt4_frame, text="VT Get Hashes", command=self.submit_hash_for_all_hashes, fg='black', bg='Light Sea Green')
+        self.all_hashes_button.pack(pady=10)
+
+        # VT Results Output
+        self.vt_results_output = scrolledtext.ScrolledText(self, wrap=tk.WORD, height=7, bg='light blue', fg='black')
+        self.vt_results_output.pack(expand=1, fill='both')
+        self.vt_results_output.insert(tk.END, "VirusTotal results will be displayed here...")
+        self.vt_results_output.configure(state='disable')
+
+    #\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\Important\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\    
+    VIRUSTOTAL_API_KEY = ''
+     #\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\Important\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+    def on_input(self, event):
+        content = self.article_input.get("1.0", tk.END).strip()
+        if content == "Input Text Here...":
+            self.article_input.delete("1.0", tk.END)
+
+    def query_virustotal(self, ioc):
+        headers = {
+            "Accept": "application/json",
+            "x-apikey": self.VIRUSTOTAL_API_KEY
+        }
+
+        if self.is_url(ioc):
+            # Encode the URL in Base64
+            encoded_url = base64.urlsafe_b64encode(ioc.encode()).decode().strip("=")
+
+            # Retrieve the analysis results using the encoded URL
+            url = f"https://www.virustotal.com/api/v3/urls/{encoded_url}"
+            report_link = f"https://www.virustotal.com/gui/url/{encoded_url}/detection"
+        else:  # Assuming it's a hash
+            url = f"https://www.virustotal.com/api/v3/files/{ioc}"
+
+        response = requests.get(url, headers=headers)
+
+        if response.status_code != 200:
+            if response.status_code != 200:
+                error_message = response.json().get('error', {}).get('message', 'Unknown error')
+                if "not found" in error_message:
+                    return f"URL not scanned on VirusTotal. Consider submitting it for analysis."
+                else:
+                    return f"Error querying VirusTotal: {error_message}"
+        data = response.json()
+
+        # Extract relevant information from the response
+        if 'data' in data:
+            attributes = data['data']['attributes']
+            ratio = attributes['last_analysis_stats']
+            malicious = ratio['malicious']
+            undetected = ratio['undetected']
+            return f"Malicious: {malicious}, Undetected: {undetected}, Link: {report_link}"
+        else:
+            return "Error querying VirusTotal"
+
+    def is_url(self, string):
+        return string.startswith("http://") or string.startswith("https://") or (' ')
+    
+    def on_vt_button_click(self):
+        # Get the selected IOC(s) from the review_output widget
+        iocs = self.review_output.get(tk.SEL_FIRST, tk.SEL_LAST).split('\n')
+        
+        results = []
+        for ioc in iocs:
+            if ioc:  # Check if the string is not empty
+                result = self.query_virustotal(ioc.strip())
+                results.append((ioc, result))
+        
+        # Display the results in the vt_results_output widget
+        self.vt_results_output.configure(state='normal')  # Make it writable
+        self.vt_results_output.delete(1.0, tk.END)  # Clear previous results
+        
+        # Define a bold tag
+        self.vt_results_output.tag_configure("bold", font=("Arial", 10, "bold"))
+        
+        for ioc, result in results:
+            # Insert the URL with the bold tag
+            self.vt_results_output.insert(tk.END, ioc + ":\n", "bold")
+            self.vt_results_output.insert(tk.END, result + "\n\n")
+        
+        self.vt_results_output.configure(state='disable')
+
+    def submit_url_for_analysis(self):
+        # Get the selected URL(s) from the review_output widget
+        urls = self.review_output.get(tk.SEL_FIRST, tk.SEL_LAST).split('\n')
+        
+        headers = {
+            "Accept": "application/json",
+            "x-apikey": self.VIRUSTOTAL_API_KEY
+        }
+        
+        submit_url_endpoint = "https://www.virustotal.com/api/v3/urls"
+        
+        # Clear the vt_results_output widget and make it writable
+        self.vt_results_output.configure(state='normal')
+        self.vt_results_output.delete(1.0, tk.END)
+        
+        # Define a bold tag for the widget
+        self.vt_results_output.tag_configure("bold", font=("Arial", 10, "bold"))
+        
+        for url in urls:
+            if url:  # Check if the string is not empty
+                data = {"url": url.strip()}
+                response = requests.post(submit_url_endpoint, headers=headers, data=data)
+                
+                if response.status_code == 200:
+                    # The URL was successfully submitted for analysis
+                    analysis_id = response.json().get("data", {}).get("id", "")
+                    analysis_url = f"https://www.virustotal.com/gui/url-analysis/ui-id/{analysis_id}/detection"
+                    # Display the success message and analysis URL in the vt_results_output widget
+                    self.vt_results_output.insert(tk.END, f"URL {url}:\n", "bold")
+                    self.vt_results_output.insert(tk.END, f"Submitted successfully. Analysis ID: {analysis_id}\n")
+                    self.vt_results_output.insert(tk.END, f"Analysis URL: {analysis_url}\n\n")
+                else:
+                    # There was an error submitting the URL
+                    error_message = response.json().get('error', {}).get('message', 'Unknown error')
+                    # Display the error message in the vt_results_output widget
+                    self.vt_results_output.insert(tk.END, f"URL {url}:\n", "bold")
+                    self.vt_results_output.insert(tk.END, f"Error submitting for analysis: {error_message}\n\n")
+        
+        # Make the vt_results_output widget read-only again
+        self.vt_results_output.configure(state='disable')
+
+    def submit_hash_for_analysis(self):
+        
+        hashes = self.review_output.get(tk.SEL_FIRST, tk.SEL_LAST).split('\n')
+        headers = {
+            "Accept": "application/json",
+            "x-apikey": self.VIRUSTOTAL_API_KEY
+        }
+        self.vt_results_output.configure(state='normal')
+        self.vt_results_output.delete(1.0, tk.END)
+        self.vt_results_output.tag_configure("bold", font=("Arial", 10, "bold"))
+
+        for hashing in hashes:
+            hashing = hashing.strip()  # Remove any leading or trailing whitespace
+            if hashing and len(hashing) == 64:  # Ensure it's a valid SHA-256 hash length
+                submit_url_endpoint = f"https://www.virustotal.com/api/v3/files/{hashing}/analyse"
+                try:
+                    response = requests.post(submit_url_endpoint, headers=headers)
+                    response_data = response.json()
+                    if 200 <= response.status_code < 300:
+                        analysis_id = response_data.get("data", {}).get("id", "")
+                        analysis_url = f"https://www.virustotal.com/gui/file/{hashing}"
+                        self.vt_results_output.insert(tk.END, f"Hash {hashing}:\n", "bold")
+                        self.vt_results_output.insert(tk.END, f"Submitted successfully. Analysis ID: {analysis_id}\n")
+                        self.vt_results_output.insert(tk.END, f"Virus Total GUI: {analysis_url}\n\n")
+                    else:
+                        error_message = response_data.get('error', {}).get('message', 'Unknown error')
+                        self.vt_results_output.insert(tk.END, f"URL {hashing}:\n", "bold")
+                        self.vt_results_output.insert(tk.END, f"Error submitting for analysis: {error_message}\n\n")
+                except (ValueError, requests.RequestException) as e:
+                    self.vt_results_output.insert(tk.END, f"URL {hashing}:\n", "bold")
+                    self.vt_results_output.insert(tk.END, f"Error: {str(e)}\n\n")
+
+        self.vt_results_output.configure(state='disable')
+
+    def submit_hash_for_all_hashes(self):
+        hashes = self.review_output.get(tk.SEL_FIRST, tk.SEL_LAST).split('\n')
+        headers = {
+            "Accept": "application/json",
+            "x-apikey": self.VIRUSTOTAL_API_KEY
+        }
+        self.vt_results_output.configure(state='normal')
+        self.vt_results_output.delete(1.0, tk.END)
+        self.vt_results_output.tag_configure("bold", font=("Arial", 10, "bold"))
+
+        for hashing in hashes:
+            hashing = hashing.strip()  # Remove any leading or trailing whitespace
+            if hashing and len(hashing) == 64:  # Ensure it's a valid SHA-256 hash length
+                hash_details = self.get_hash_details(hashing)
+                if "error" not in hash_details:
+                    self.vt_results_output.insert(tk.END, f"Hash {hashing}:\n", "bold")
+                    self.vt_results_output.insert(tk.END, f"MD5: {hash_details['md5']}\n")
+                    self.vt_results_output.insert(tk.END, f"SHA-1: {hash_details['sha1']}\n")
+                    self.vt_results_output.insert(tk.END, f"SHA-256: {hash_details['sha256']}\n\n")
+                else:
+                    self.vt_results_output.insert(tk.END, f"Hash {hashing}:\n", "bold")
+                    self.vt_results_output.insert(tk.END, f"Error: {hash_details['error']}\n\n")
+
+        self.vt_results_output.configure(state='disable')
+
+    def get_hash_details(self, hash_value):
+        headers = {
+            "Accept": "application/json",
+            "x-apikey": self.VIRUSTOTAL_API_KEY
+        }
+        
+        # Endpoint to retrieve file details
+        file_info_endpoint = f"https://www.virustotal.com/api/v3/files/{hash_value}"
+        
+        response = requests.get(file_info_endpoint, headers=headers)
+        
+        if response.status_code == 200:
+            data = response.json()
+            attributes = data.get("data", {}).get("attributes", {})
+            
+            # Extracting associated hashes
+            md5 = attributes.get("md5", "Not available")
+            sha1 = attributes.get("sha1", "Not available")
+            sha256 = attributes.get("sha256", "Not available")
+            
+            return {
+                "md5": md5,
+                "sha1": sha1,
+                "sha256": sha256
+            }
+        else:
+            # Handle error
+            try:
+                error_message = response.json().get('error', {}).get('message', 'Unknown error')
+            except ValueError:
+                error_message = "Unknown error"
+            return {"error": error_message}
 
     def refang(self, value: str) -> str:
         # Refang the defanged IPs and URLs
