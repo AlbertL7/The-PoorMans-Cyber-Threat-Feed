@@ -136,15 +136,19 @@ class IOCExtractor(tk.Tk):
     #\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\Important\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
     def create_context_menu(self):
-        """Create a context menu with Copy and Paste options."""
         self.context_menu = tk.Menu(self, tearoff=0)
         self.context_menu.add_command(label="Copy", command=self.copy_text)
         self.context_menu.add_command(label="Paste", command=self.paste_text)
-
         # Bind the context menu to the right-click event of the text widgets
-        self.article_input.bind("<Button-3>", self.show_context_menu)
-        self.review_output.bind("<Button-3>", self.show_context_menu)
-        self.vt_results_output.bind("<Button-3>", self.show_context_menu)  # Add this line
+        # Use a conditional check to determine the type of system and bind the appropriate button for the context menu
+        if platform.system() == "Darwin":  # macOS
+            self.article_input.bind("<Button-2>", self.show_context_menu)
+            self.review_output.bind("<Button-2>", self.show_context_menu)
+            self.vt_results_output.bind("<Button-2>", self.show_context_menu)
+        else:  # Other systems like Windows or Linux
+            self.article_input.bind("<Button-3>", self.show_context_menu)
+            self.review_output.bind("<Button-3>", self.show_context_menu)
+            self.vt_results_output.bind("<Button-3>", self.show_context_menu)
 
     def show_context_menu(self, event):
         """Display the context menu at the event's position."""
