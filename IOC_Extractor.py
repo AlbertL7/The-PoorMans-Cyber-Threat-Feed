@@ -1,22 +1,8 @@
 # TLD's in the Domains key was pulled from https://data.iana.org/TLD/tlds-alpha-by-domain.txt
-# File Names does not catch files with spaces correctly. Example: "test example.exe" ---> testexample.exe
+# File Names does not catch files with spaces correctly. Example: "test example.exe" ---> example.exe
 # Domains does not capture SLD's correctly. Example: "example.uk.co ---> uk.co". 
-# IPv6 catches mostly everything but also will catch catches times
+# IPv6 does not catch all but does the job for now
 # I do not think URLs that have b64 / url / or hex encodeing will get caught and URLs with a double "\\/" as well
-
-"""
-If Using a MAC, you must change the values in the VT frame so that the Buttons are clearly visable:
-
-# VirusTotal Frame buttons for MAC
-        self.vt_frame = tk.Frame(self)
-        self.vt_frame.place(relx=1.0, rely=1.0, x=-10, y=-27, anchor="se")
-        self.vt2_frame = tk.Frame(self)
-        self.vt2_frame.place(relx=1.0, rely=1.0, x=-130, y=-27, anchor="se")
-        self.vt3_frame = tk.Frame(self)
-        self.vt3_frame.place(relx=1.0, rely=1.0, x=-243, y=-27, anchor="se")
-        self.vt4_frame = tk.Frame(self)
-        self.vt4_frame.place(relx=1.0, rely=1.0, x=-370, y=-27, anchor="se")
-"""
 
 import re
 import time
@@ -27,8 +13,10 @@ import tkinter.filedialog
 import tkinter.simpledialog
 import tkinter.messagebox
 import tkinter.messagebox as messagebox
-import os
 from tkinter import scrolledtext
+import os
+import platform
+
 
 SEPARATOR_DEFANGS = r"[\(\)\[\]{}<>\\]"
 END_PUNCTUATION = r"[\.\?>\"'\)!,}:;\u201d\u2019\uff1e\uff1c\]]*"
@@ -60,70 +48,124 @@ class IOCExtractor(tk.Tk):
         self.title("IOC Extractor")
         self.iconbitmap('')
         self.geometry("1600x800")
-        
-        # Article Input
+        # Article Input Window
         self.article_input = scrolledtext.ScrolledText(self, wrap=tk.WORD, height=10, bg='light grey', fg='black')
         self.article_input.pack(expand=1, fill='both')
         self.article_input.insert(tk.END, "Input Text Here...")
         self.article_input.bind("<Key>", self.on_input)
         self.article_input.bind("<Button-1>", self.on_input)
-        
-        # Review Output
+        # Review Output Window
         self.review_output = scrolledtext.ScrolledText(self, wrap=tk.WORD, height=10, bg='Burlywood', fg='black')
         self.review_output.pack(expand=1, fill='both')
         self.review_output.insert(tk.END, "Extracted IOCs will be displayed here...")
         self.review_output.configure(state='disable')
         self.review_output.tag_configure("highlight", background="yellow")
-        
-        # Buttons
+        # Button to Parse IOC's
         self.parse_button = tk.Button(self, text="Parse IOCs", command=self.parse_iocs, fg='black', bg='green')
         self.parse_button.pack(side=tk.BOTTOM, fill='x')
+        # Button to Defang IOC's
         self.defang_button = tk.Button(self, text="Defang IOCs", command=self.defang_iocs, fg='black', bg='Light Sea Green')
         self.defang_button.pack(side=tk.RIGHT, fill='x')
+        # Button to Save the Entire Parsed Output to a Single File 
         self.save_button = tk.Button(self, text="Save Group", command=self.save_iocs, fg='black', bg='Light Sea Green')
         self.save_button.pack(side=tk.RIGHT, fill='x')
+        # Button to save each individual parsed category to a folder in individual text files
         self.save_folder_button = tk.Button(self, text="Save Individually", command=self.save_iocs_to_folder, fg='black', bg='Light Sea Green')
         self.save_folder_button.pack(side=tk.RIGHT, fill='x')
+        # Button to Add an IOC to a Category
         self.modify_iocs_button = tk.Button(self, text="Add IOC", command=self.add_ioc_to_category, fg='black', bg='Light Sea Green')
         self.modify_iocs_button.pack(side=tk.RIGHT, fill='x')
+        # Button to Remove an IOC from a Category or From all Categories
         self.remove_ioc_button = tk.Button(self, text="Remove IOC", command=self.remove_ioc, fg='black', bg='Light Sea Green')
         self.remove_ioc_button.pack(side=tk.RIGHT, fill='x')
-        
-        # VirusTotal Frame
-        self.vt_frame = tk.Frame(self)
-        self.vt_frame.place(relx=1.0, rely=1.0, x=-10, y=-27, anchor="se")
-        self.vt2_frame = tk.Frame(self)
-        self.vt2_frame.place(relx=1.0, rely=1.0, x=-95, y=-27, anchor="se")
-        self.vt3_frame = tk.Frame(self)
-        self.vt3_frame.place(relx=1.0, rely=1.0, x=-170, y=-27, anchor="se")
-        self.vt4_frame = tk.Frame(self)
-        self.vt4_frame.place(relx=1.0, rely=1.0, x=-260, y=-27, anchor="se")
-
-        # VT Button inside VT Frame
+        # Check OS Type to adjust buttoons in frame
+        os_type = platform.system()
+        if os_type == "Windows":
+            # VirusTotal Frame for "VT URL Check"
+            self.vt_frame = tk.Frame(self)
+            self.vt_frame.place(relx=1.0, rely=1.0, x=-10, y=-27, anchor="se")
+            # VirusTotal Framefor "VT URL Scan"
+            self.vt2_frame = tk.Frame(self)
+            self.vt2_frame.place(relx=1.0, rely=1.0, x=-95, y=-27, anchor="se")
+            # VirusTotal Frame for "VT Hash Check"
+            self.vt3_frame = tk.Frame(self)
+            self.vt3_frame.place(relx=1.0, rely=1.0, x=-170, y=-27, anchor="se")
+            # Virus Total Frame for "VT Get Hashes"
+            self.vt4_frame = tk.Frame(self)
+            self.vt4_frame.place(relx=1.0, rely=1.0, x=-260, y=-27, anchor="se")
+        elif os_type == "Darwin":
+            self.vt_frame = tk.Frame(self)
+            self.vt_frame.place(relx=1.0, rely=1.0, x=-10, y=-27, anchor="se")
+            self.vt2_frame = tk.Frame(self)
+            self.vt2_frame.place(relx=1.0, rely=1.0, x=-130, y=-27, anchor="se")
+            self.vt3_frame = tk.Frame(self)
+            self.vt3_frame.place(relx=1.0, rely=1.0, x=-243, y=-27, anchor="se")
+            self.vt4_frame = tk.Frame(self)
+            self.vt4_frame.place(relx=1.0, rely=1.0, x=-370, y=-27, anchor="se")
+        elif os_type == "Linux":
+            self.vt_frame = tk.Frame(self)
+            self.vt_frame.place(relx=1.0, rely=1.0, x=-10, y=-30, anchor="se")
+            self.vt2_frame = tk.Frame(self)
+            self.vt2_frame.place(relx=1.0, rely=1.0, x=-130, y=-30, anchor="se")
+            self.vt3_frame = tk.Frame(self)
+            self.vt3_frame.place(relx=1.0, rely=1.0, x=-243, y=-30, anchor="se")
+            self.vt4_frame = tk.Frame(self)
+            self.vt4_frame.place(relx=1.0, rely=1.0, x=-370, y=-30, anchor="se")
+        # VT Button to see if any vendors are flagging the URL as malicious, also outputs link to GUI
         self.vt_button = tk.Button(self.vt_frame, text="VT URL Check", command=self.on_vt_button_click, fg='black', bg='Light Sea Green')
         self.vt_button.pack(pady=10)
-
-        # VT Submit for Analysis
+        # VT Button to Submit a URL that Has not been Submitted to VT yet for Analysis
         self.submit_url_button = tk.Button(self.vt2_frame, text="VT URL Scan", command=self.submit_url_for_analysis, fg='black', bg='Light Sea Green')
         self.submit_url_button.pack(pady=10)
-        
-        #VT Analyze Hahs
+        #VT Button to Check if a File hash has been flagged by any security vendors, also outputs link to GUI
         self.submit_hash_button = tk.Button(self.vt3_frame, text="VT Hash Check", command=self.submit_hash_for_analysis, fg='black', bg='Light Sea Green')
         self.submit_hash_button.pack(pady=10)
-
-        #VT get all hashes
+        #VT Button to Get all File Hashes MD5, SHA1, SHA-256
         self.all_hashes_button = tk.Button(self.vt4_frame, text="VT Get Hashes", command=self.submit_hash_for_all_hashes, fg='black', bg='Light Sea Green')
         self.all_hashes_button.pack(pady=10)
-
-        # VT Results Output
+        # VT Results Output Window
         self.vt_results_output = scrolledtext.ScrolledText(self, wrap=tk.WORD, height=7, bg='light blue', fg='black')
         self.vt_results_output.pack(expand=1, fill='both')
         self.vt_results_output.insert(tk.END, "VirusTotal results will be displayed here...")
         self.vt_results_output.configure(state='disable')
+        # Copy and Paste menue when Right Click
+        self.create_context_menu()
 
-    #\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\Important\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\    
-    VIRUSTOTAL_API_KEY = '' # Enter your API Key Here
-     #\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\Important\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+    #\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\Important\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\    
+    VIRUSTOTAL_API_KEY = ''
+    #\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\Important\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+    def create_context_menu(self):
+        """Create a context menu with Copy and Paste options."""
+        self.context_menu = tk.Menu(self, tearoff=0)
+        self.context_menu.add_command(label="Copy", command=self.copy_text)
+        self.context_menu.add_command(label="Paste", command=self.paste_text)
+
+        # Bind the context menu to the right-click event of the text widgets
+        self.article_input.bind("<Button-3>", self.show_context_menu)
+        self.review_output.bind("<Button-3>", self.show_context_menu)
+        self.vt_results_output.bind("<Button-3>", self.show_context_menu)  # Add this line
+
+    def show_context_menu(self, event):
+        """Display the context menu at the event's position."""
+        self.context_menu.post(event.x_root, event.y_root)
+
+    def copy_text(self):
+        try:
+            widget = self.focus_get()  # Get the widget that currently has focus
+            selected_text = widget.selection_get()
+            self.clipboard_clear()
+            self.clipboard_append(selected_text)
+        except tk.TclError:
+            pass
+
+    def paste_text(self):
+        try:
+            widget = self.focus_get()  # Get the widget that currently has focus
+            clipboard_text = self.clipboard_get()
+            widget.insert(tk.INSERT, clipboard_text)
+        except tk.TclError:
+            pass
 
     def on_input(self, event):
         content = self.article_input.get("1.0", tk.END).strip()
@@ -248,7 +290,7 @@ class IOCExtractor(tk.Tk):
 
         for hashing in hashes:
             hashing = hashing.strip()  # Remove any leading or trailing whitespace
-            if hashing and len(hashing) == 64:  # Ensure it's a valid SHA-256 hash length
+            if hashing and len(hashing) in (32, 40, 64):  # Ensure it's a valid SHA-256 hash length
                 submit_url_endpoint = f"https://www.virustotal.com/api/v3/files/{hashing}/analyse"
                 try:
                     response = requests.post(submit_url_endpoint, headers=headers)
@@ -281,10 +323,10 @@ class IOCExtractor(tk.Tk):
 
         for hashing in hashes:
             hashing = hashing.strip()  # Remove any leading or trailing whitespace
-            if hashing and len(hashing) == 64:  # Ensure it's a valid SHA-256 hash length
+            if hashing and len(hashing) in (32, 40, 64):  # Ensure it's a valid SHA-256 hash length
                 hash_details = self.get_hash_details(hashing)
                 if "error" not in hash_details:
-                    self.vt_results_output.insert(tk.END, f"Hash {hashing}:\n", "bold")
+                    #self.vt_results_output.insert(tk.END, f"Hash {hashing}:\n", "bold")
                     self.vt_results_output.insert(tk.END, f"MD5: {hash_details['md5']}\n")
                     self.vt_results_output.insert(tk.END, f"SHA-1: {hash_details['sha1']}\n")
                     self.vt_results_output.insert(tk.END, f"SHA-256: {hash_details['sha256']}\n\n")
