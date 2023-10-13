@@ -85,7 +85,7 @@ class IOCExtractor(tk.Tk):
             self.save_vt_output_frame.place(relx=1.0, rely=1.0, x=-137, y=-83, anchor="se")
         elif os_type == "Darwin":
             self.save_vt_output_frame = tk.Frame(self)
-            self.save_vt_output_frame.place(relx=1.0, rely=1.0, x=-172, y=-83, anchor="se")
+            self.save_vt_output_frame.place(relx=1.0, rely=1.0, x=-176, y=-83, anchor="se")
         elif os_type == "Linux":
             self.save_vt_output_frame = tk.Frame(self)
             self.save_vt_output_frame.place(relx=1.0, rely=1.0, x=-172, y=-83, anchor="se")
