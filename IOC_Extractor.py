@@ -90,7 +90,7 @@ class IOCExtractor(tk.Tk):
             self.save_vt_output_frame = tk.Frame(self)
             self.save_vt_output_frame.place(relx=1.0, rely=1.0, x=-172, y=-83, anchor="se")
         # Save Virus Total Output Button
-        self.save_vt_output_button = tk.Button(self.save_vt_output_frame, text="Save VT Output", command=self.save_vt_output, fg='black', bg='Light Blue')
+        self.save_vt_output_button = tk.Button(self.save_vt_output_frame, text="VT Save Output", command=self.save_vt_output, fg='black', bg='Light Blue')
         self.save_vt_output_button.pack(side=tk.RIGHT, fill='x')
         # Frame for Save input text button
         if os_type == "Windows":
