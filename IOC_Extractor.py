@@ -1,11 +1,11 @@
 # TLD's in the Domains key was pulled from https://data.iana.org/TLD/tlds-alpha-by-domain.txt
-# File Names does not catch files with spaces correctly. Example: "test example.exe" ---> "testexample.exe"
+# File Names does not catch files with spaces correctly. Example: "test example.exe" ---> example.exe
 # Domains does not capture SLD's correctly. Example: "example.uk.co ---> uk.co". 
-# IPv6 does not catch all but does the job for now
+# IPv6 Catches everything including time, commented out for now. Uncomment if you want to use it.
 # I do not think URLs that have b64 / url / or hex encodeing will get caught and URLs with a double "\\/" as well
 
 import re
-import time
+from datetime import datetime
 import base64
 import requests
 import tkinter as tk
@@ -25,7 +25,7 @@ TLD = r"(?:com|org|top|ga|ml|info|cf|gq|icu|wang|live|cn|online|host|us|tk|fyi|b
 
 regexes = { #catch IPv4 without defang
     'IPv4': re.compile(r'\b(25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)(?:\.|\[\.\])(25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)(?:\.|\[\.\])(25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)(?:\.|\[\.\])(25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)\b'),
-    'IPv6': re.compile(r'(?:[A-Fa-f0-9]{1,4}:){7}[A-Fa-f0-9]{1,4}|(?:[A-Fa-f0-9]{1,4}:){1,7}:|(?:[A-Fa-f0-9]{1,4}:){1,6}[A-Fa-f0-9]{1,4}|(?:[A-Fa-f0-9]{1,4}:){1,5}(?::[A-Fa-f0-9]{1,4}){1,2}|(?:[A-Fa-f0-9]{1,4}:){1,4}(?::[A-Fa-f0-9]{1,4}){1,3}|(?:[A-Fa-f0-9]{1,4}:){1,3}(?::[A-Fa-f0-9]{1,4}){1,4}|(?:[A-Fa-f0-9]{1,4}:){1,2}(?::[A-Fa-f0-9]{1,4}){1,5}|[A-Fa-f0-9]{1,4}:(?::[A-Fa-f0-9]{1,4}){1,6}|:(?::[A-Fa-f0-9]{1,4}){1,7}|::[A-Fa-f0-9]{1,4}|::|'),
+    #'IPv6': re.compile(r'(?:[A-Fa-f0-9]{1,4}:){7}[A-Fa-f0-9]{1,4}|(?:[A-Fa-f0-9]{1,4}:){1,7}:|(?:[A-Fa-f0-9]{1,4}:){1,6}[A-Fa-f0-9]{1,4}|(?:[A-Fa-f0-9]{1,4}:){1,5}(?::[A-Fa-f0-9]{1,4}){1,2}|(?:[A-Fa-f0-9]{1,4}:){1,4}(?::[A-Fa-f0-9]{1,4}){1,3}|(?:[A-Fa-f0-9]{1,4}:){1,3}(?::[A-Fa-f0-9]{1,4}){1,4}|(?:[A-Fa-f0-9]{1,4}:){1,2}(?::[A-Fa-f0-9]{1,4}){1,5}|[A-Fa-f0-9]{1,4}:(?::[A-Fa-f0-9]{1,4}){1,6}|:(?::[A-Fa-f0-9]{1,4}){1,7}|::[A-Fa-f0-9]{1,4}|::|'),
     'Domains': re.compile((r"(?<![@a-zA-Z0-9._%+-])([a-zA-Z0-9\-]+(?:\.|\[\.\]){0})\b").format(TLD)),
     'Sub Domains': re.compile(r'(?<![@a-zA-Z0-9._%+-])(?:[a-zA-Z0-9](?:[a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?(?:\.|\[\.]))+[a-zA-Z0-9](?:[a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?(?:\.|\[\.])[a-zA-Z]{2,}'),
     'URLs': re.compile(r"([fhstu]\S\S?[px]s?(?::\/\/|:\\\\|\[:\]\/\/|\[:\/\/\]|:?__)(?:\x20|" + SEPARATOR_DEFANGS + r")*\w\S+?(?:\x20[\/\.][^\.\/\s]\S*?)*)(?=\s|[^\x00-\x7F]|$)", re.IGNORECASE | re.VERBOSE | re.UNICODE), 
@@ -64,35 +64,64 @@ class IOCExtractor(tk.Tk):
         self.parse_button = tk.Button(self, text="Parse IOCs", command=self.parse_iocs, fg='black', bg='green')
         self.parse_button.pack(side=tk.BOTTOM, fill='x')
         # Button to Defang IOC's
-        self.defang_button = tk.Button(self, text="Defang IOCs", command=self.defang_iocs, fg='black', bg='Light Sea Green')
+        self.defang_button = tk.Button(self, text="Defang IOCs", command=self.defang_iocs, fg='black', bg='Burlywood')
         self.defang_button.pack(side=tk.RIGHT, fill='x')
         # Button to Save the Entire Parsed Output to a Single File 
-        self.save_button = tk.Button(self, text="Save Group", command=self.save_iocs, fg='black', bg='Light Sea Green')
+        self.save_button = tk.Button(self, text="Save Group", command=self.save_iocs, fg='black', bg='Burlywood')
         self.save_button.pack(side=tk.RIGHT, fill='x')
         # Button to save each individual parsed category to a folder in individual text files
-        self.save_folder_button = tk.Button(self, text="Save Individually", command=self.save_iocs_to_folder, fg='black', bg='Light Sea Green')
+        self.save_folder_button = tk.Button(self, text="Save Individually", command=self.save_iocs_to_folder, fg='black', bg='Burlywood')
         self.save_folder_button.pack(side=tk.RIGHT, fill='x')
         # Button to Add an IOC to a Category
-        self.modify_iocs_button = tk.Button(self, text="Add IOC", command=self.add_ioc_to_category, fg='black', bg='Light Sea Green')
+        self.modify_iocs_button = tk.Button(self, text="Add IOC", command=self.add_ioc_to_category, fg='black', bg='Burlywood')
         self.modify_iocs_button.pack(side=tk.RIGHT, fill='x')
         # Button to Remove an IOC from a Category or From all Categories
-        self.remove_ioc_button = tk.Button(self, text="Remove IOC", command=self.remove_ioc, fg='black', bg='Light Sea Green')
+        self.remove_ioc_button = tk.Button(self, text="Remove IOC", command=self.remove_ioc, fg='black', bg='Burlywood')
         self.remove_ioc_button.pack(side=tk.RIGHT, fill='x')
-        # Check OS Type to adjust buttoons in frame
         os_type = platform.system()
+        # Save VirusTotal Output frame
+        if os_type == "Windows":
+            self.save_vt_output_frame = tk.Frame(self)
+            self.save_vt_output_frame.place(relx=1.0, rely=1.0, x=-137, y=-83, anchor="se")
+        elif os_type == "Darwin":
+            self.save_vt_output_frame = tk.Frame(self)
+            self.save_vt_output_frame.place(relx=1.0, rely=1.0, x=-172, y=-83, anchor="se")
+        elif os_type == "Linux":
+            self.save_vt_output_frame = tk.Frame(self)
+            self.save_vt_output_frame.place(relx=1.0, rely=1.0, x=-172, y=-83, anchor="se")
+        # Save Virus Total Output Button
+        self.save_vt_output_button = tk.Button(self.save_vt_output_frame, text="Save VT Output", command=self.save_vt_output, fg='black', bg='Light Blue')
+        self.save_vt_output_button.pack(side=tk.RIGHT, fill='x')
+        # Frame for Save input text button
+        if os_type == "Windows":
+            self.input_text_frame = tk.Frame(self)
+            self.input_text_frame.place(relx=1.0, rely=1.0, x=-10, y=-170, anchor="se")
+        elif os_type == "Darwin":
+            self.input_text_frame = tk.Frame(self)
+            self.input_text_frame.place(relx=1.0, rely=1.0, x=-10, y=-170, anchor="se")
+        elif os_type == "Linux":
+            self.input_text_frame = tk.Frame(self)
+            self.input_text_frame.place(relx=1.0, rely=1.0, x=-10, y=-170, anchor="se")
+        # Save Source Text that was coppied and pasted
+        self.save_input_button = tk.Button(self.input_text_frame, text="Save Input Text", command=self.save_input_text, fg='black', bg='light grey')
+        self.save_input_button.pack(side=tk.TOP, fill='x')
+        # Check OS Type to adjust buttoons in frame
         if os_type == "Windows":
             # VirusTotal Frame for "VT URL Check"
             self.vt_frame = tk.Frame(self)
             self.vt_frame.place(relx=1.0, rely=1.0, x=-10, y=-27, anchor="se")
             # VirusTotal Framefor "VT URL Scan"
             self.vt2_frame = tk.Frame(self)
-            self.vt2_frame.place(relx=1.0, rely=1.0, x=-95, y=-27, anchor="se")
+            self.vt2_frame.place(relx=1.0, rely=1.0, x=-110, y=-27, anchor="se")
             # VirusTotal Frame for "VT Hash Check"
             self.vt3_frame = tk.Frame(self)
-            self.vt3_frame.place(relx=1.0, rely=1.0, x=-170, y=-27, anchor="se")
+            self.vt3_frame.place(relx=1.0, rely=1.0, x=-188, y=-27, anchor="se")
             # Virus Total Frame for "VT Get Hashes"
             self.vt4_frame = tk.Frame(self)
-            self.vt4_frame.place(relx=1.0, rely=1.0, x=-260, y=-27, anchor="se")
+            self.vt4_frame.place(relx=1.0, rely=1.0, x=-280, y=-27, anchor="se")
+            # Virus Total Frame for "VT MITRE Techniques"
+            self.vt5_frame = tk.Frame(self)
+            self.vt5_frame.place(relx=1.0, rely=1.0, x=-10, y=-73, anchor="se")
         elif os_type == "Darwin":
             self.vt_frame = tk.Frame(self)
             self.vt_frame.place(relx=1.0, rely=1.0, x=-10, y=-27, anchor="se")
@@ -102,27 +131,34 @@ class IOCExtractor(tk.Tk):
             self.vt3_frame.place(relx=1.0, rely=1.0, x=-243, y=-27, anchor="se")
             self.vt4_frame = tk.Frame(self)
             self.vt4_frame.place(relx=1.0, rely=1.0, x=-370, y=-27, anchor="se")
+            self.vt5_frame = tk.Frame(self)
+            self.vt5_frame.place(relx=1.0, rely=1.0, x=-10, y=-73, anchor="se")
         elif os_type == "Linux":
             self.vt_frame = tk.Frame(self)
             self.vt_frame.place(relx=1.0, rely=1.0, x=-10, y=-30, anchor="se")
             self.vt2_frame = tk.Frame(self)
-            self.vt2_frame.place(relx=1.0, rely=1.0, x=-130, y=-30, anchor="se")
+            self.vt2_frame.place(relx=1.0, rely=1.0, x=-140, y=-30, anchor="se")
             self.vt3_frame = tk.Frame(self)
             self.vt3_frame.place(relx=1.0, rely=1.0, x=-243, y=-30, anchor="se")
             self.vt4_frame = tk.Frame(self)
-            self.vt4_frame.place(relx=1.0, rely=1.0, x=-370, y=-30, anchor="se")
+            self.vt4_frame.place(relx=1.0, rely=1.0, x=-368, y=-30, anchor="se")
+            self.vt5_frame = tk.Frame(self)
+            self.vt5_frame.place(relx=1.0, rely=1.0, x=-10, y=-73, anchor="se")
         # VT Button to see if any vendors are flagging the URL as malicious, also outputs link to GUI
-        self.vt_button = tk.Button(self.vt_frame, text="VT URL Check", command=self.on_vt_button_click, fg='black', bg='Light Sea Green')
+        self.vt_button = tk.Button(self.vt_frame, text="VT IP/URL Check", command=self.on_vt_button_click, fg='black', bg='Light Blue')
         self.vt_button.pack(pady=10)
         # VT Button to Submit a URL that Has not been Submitted to VT yet for Analysis
-        self.submit_url_button = tk.Button(self.vt2_frame, text="VT URL Scan", command=self.submit_url_for_analysis, fg='black', bg='Light Sea Green')
+        self.submit_url_button = tk.Button(self.vt2_frame, text="VT URL Scan", command=self.submit_url_for_analysis, fg='black', bg='Light Blue')
         self.submit_url_button.pack(pady=10)
         #VT Button to Check if a File hash has been flagged by any security vendors, also outputs link to GUI
-        self.submit_hash_button = tk.Button(self.vt3_frame, text="VT Hash Check", command=self.submit_hash_for_analysis, fg='black', bg='Light Sea Green')
+        self.submit_hash_button = tk.Button(self.vt3_frame, text="VT Hash Check", command=self.submit_hash_for_analysis, fg='black', bg='Light Blue')
         self.submit_hash_button.pack(pady=10)
-        #VT Button to Get all File Hashes MD5, SHA1, SHA-256
-        self.all_hashes_button = tk.Button(self.vt4_frame, text="VT Get Hashes", command=self.submit_hash_for_all_hashes, fg='black', bg='Light Sea Green')
+        # VT Button to Get all File Hashes MD5, SHA1, SHA-256
+        self.all_hashes_button = tk.Button(self.vt4_frame, text="VT Get Hashes", command=self.submit_hash_for_all_hashes, fg='black', bg='Light Blue')
         self.all_hashes_button.pack(pady=10)
+        # VT Button to Get MITRE TTP's
+        self.submit_ttp_button = tk.Button(self.vt5_frame, text="VT MITRE Techniques", command=self.submit_for_mitre_ttps, fg='black', bg='Light Blue')
+        self.submit_ttp_button.pack(pady=10)
         # VT Results Output Window
         self.vt_results_output = scrolledtext.ScrolledText(self, wrap=tk.WORD, height=7, bg='light blue', fg='black')
         self.vt_results_output.pack(expand=1, fill='both')
@@ -139,6 +175,7 @@ class IOCExtractor(tk.Tk):
         self.context_menu = tk.Menu(self, tearoff=0)
         self.context_menu.add_command(label="Copy", command=self.copy_text)
         self.context_menu.add_command(label="Paste", command=self.paste_text)
+
         # Bind the context menu to the right-click event of the text widgets
         # Use a conditional check to determine the type of system and bind the appropriate button for the context menu
         if platform.system() == "Darwin":  # macOS
@@ -209,7 +246,17 @@ class IOCExtractor(tk.Tk):
             ratio = attributes['last_analysis_stats']
             malicious = ratio['malicious']
             undetected = ratio['undetected']
-            return f"Malicious: {malicious}, Undetected: {undetected}, Link: {report_link}"
+
+            last_analysis_date = attributes.get("last_analysis_date")
+        # Convert the Unix timestamp to a readable format, if necessary
+            if last_analysis_date:
+                
+                readable_date = datetime.utcfromtimestamp(last_analysis_date).strftime('%Y-%m-%d %H:%M:%S')
+            else:
+                readable_date = "No analysis date available."
+
+            return f"Malicious: {malicious}, Undetected: {undetected}, \nLast Analysis Date: {readable_date}, Link: {report_link}"
+
         else:
             return "Error querying VirusTotal"
 
@@ -372,6 +419,80 @@ class IOCExtractor(tk.Tk):
             except ValueError:
                 error_message = "Unknown error"
             return {"error": error_message}
+        
+    def submit_for_mitre_ttps(self):
+        hashes = self.review_output.get(tk.SEL_FIRST, tk.SEL_LAST).split('\n')
+        
+        self.vt_results_output.configure(state='normal')
+        self.vt_results_output.delete(1.0, tk.END)
+        self.vt_results_output.tag_configure("bold", font=("Arial", 10, "bold"))
+
+        for ttp in hashes:
+            ttp = ttp.strip()  # Remove any leading or trailing whitespace
+            if ttp and len(ttp) in (32, 40, 64):  # Ensure it's a valid hash length
+                ttp_details = self.get_mitre_ttp_details(ttp)
+                if "error" not in ttp_details:
+                    self.vt_results_output.insert(tk.END, f"Hash {ttp}:\n", "bold")
+                    for source_info in ttp_details:
+                        self.vt_results_output.insert(tk.END, f"Source: {source_info['source']}\n")
+                        for tactic in source_info['tactics']:
+                            self.vt_results_output.insert(tk.END, f"Tactic Name: {tactic['name']}\n")
+                            self.vt_results_output.insert(tk.END, f"Tactic ID: {tactic['id']}\n")
+                            for technique in tactic['techniques']:
+                                self.vt_results_output.insert(tk.END, f"\tTechnique Name: {technique['name']}\n")
+                                self.vt_results_output.insert(tk.END, f"\tTechnique ID: {technique['id']}\n")
+                            self.vt_results_output.insert(tk.END, "\n")
+                else:
+                    self.vt_results_output.insert(tk.END, f"Hash {ttp}:\n", "bold")
+                    self.vt_results_output.insert(tk.END, f"Error: {ttp_details['error']}\n\n")
+
+    def get_mitre_ttp_details(self, ttp_value):
+        headers = {
+            "Accept": "application/json",
+            "x-apikey": self.VIRUSTOTAL_API_KEY
+        }
+        
+        # Endpoint to retrieve file details
+        ttp_info_endpoint = f"https://www.virustotal.com/api/v3/files/{ttp_value}/behaviour_mitre_trees"
+        
+        response = requests.get(ttp_info_endpoint, headers=headers)
+        
+        if response.status_code == 200:
+            data = response.json()
+            # Initialize an empty list to store tactics and techniques information
+            tactics_techniques_info = []
+
+            # Extracting necessary details from each source
+            for source, info in data.get("data", {}).items():
+                source_info = {"source": source, "tactics": []}
+                for tactic in info.get("tactics", []):
+                    tactic_info = {
+                        "description": tactic.get("description"),
+                        "id": tactic.get("id"),
+                        "name": tactic.get("name"),
+                        "link": tactic.get("link"),
+                        "techniques": []
+                    }
+                    for technique in tactic.get("techniques", []):
+                        technique_info = {
+                            "description": technique.get("description"),
+                            "id": technique.get("id"),
+                            "name": technique.get("name"),
+                            "link": technique.get("link"),
+                            "signatures": technique.get("signatures")
+                        }
+                        tactic_info["techniques"].append(technique_info)
+                    source_info["tactics"].append(tactic_info)
+                tactics_techniques_info.append(source_info)
+
+            return tactics_techniques_info
+        else:
+            # Handle error
+            try:
+                error_message = response.json().get('error', {}).get('message', 'Unknown error')
+            except ValueError:
+                error_message = "Unknown error"
+            return {"error": error_message}
 
     def refang(self, value: str) -> str:
         # Refang the defanged IPs and URLs
@@ -525,6 +646,32 @@ class IOCExtractor(tk.Tk):
         self.review_output.delete("1.0", tk.END)
         self.review_output.insert(tk.END, defanged_content)
         self.review_output.configure(state='disabled')
+
+    def save_input_text(self):
+        # Get the content from the input widget
+        input_content = self.article_input.get("1.0", tk.END)
+        file_path = tk.filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Text Files", "*.txt"), ("All Files", "*.*")])
+
+        if not file_path:  
+            return
+
+        with open(file_path, 'w') as file:
+            file.write(input_content)  
+
+        tk.messagebox.showinfo("Success", f"Input text has been saved to {os.path.basename(file_path)}")
+
+    def save_vt_output(self):
+        # Get the content from the input widget
+        input_content = self.vt_results_output.get("1.0", tk.END)
+        file_path = tk.filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Text Files", "*.txt"), ("All Files", "*.*")])
+
+        if not file_path:  
+            return
+
+        with open(file_path, 'w') as file:
+            file.write(input_content)  
+
+        tk.messagebox.showinfo("Success", f"Input text has been saved to {os.path.basename(file_path)}")
 
     def save_iocs(self):
         content = self.review_output.get("1.0", tk.END)
