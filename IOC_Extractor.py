@@ -176,13 +176,11 @@ class IOCExtractor(tk.Tk):
         self.context_menu.add_command(label="Copy", command=self.copy_text)
         self.context_menu.add_command(label="Paste", command=self.paste_text)
 
-        # Bind the context menu to the right-click event of the text widgets
-        # Use a conditional check to determine the type of system and bind the appropriate button for the context menu
-        if platform.system() == "Darwin":  # macOS
+        if platform.system() == "Darwin":  
             self.article_input.bind("<Button-2>", self.show_context_menu)
             self.review_output.bind("<Button-2>", self.show_context_menu)
             self.vt_results_output.bind("<Button-2>", self.show_context_menu)
-        else:  # Other systems like Windows or Linux
+        else:  
             self.article_input.bind("<Button-3>", self.show_context_menu)
             self.review_output.bind("<Button-3>", self.show_context_menu)
             self.vt_results_output.bind("<Button-3>", self.show_context_menu)
@@ -193,7 +191,7 @@ class IOCExtractor(tk.Tk):
 
     def copy_text(self):
         try:
-            widget = self.focus_get()  # Get the widget that currently has focus
+            widget = self.focus_get()  
             selected_text = widget.selection_get()
             self.clipboard_clear()
             self.clipboard_append(selected_text)
@@ -202,7 +200,7 @@ class IOCExtractor(tk.Tk):
 
     def paste_text(self):
         try:
-            widget = self.focus_get()  # Get the widget that currently has focus
+            widget = self.focus_get() 
             clipboard_text = self.clipboard_get()
             widget.insert(tk.INSERT, clipboard_text)
         except tk.TclError:
@@ -220,13 +218,11 @@ class IOCExtractor(tk.Tk):
         }
 
         if self.is_url(ioc):
-            # Encode the URL in Base64
             encoded_url = base64.urlsafe_b64encode(ioc.encode()).decode().strip("=")
 
-            # Retrieve the analysis results using the encoded URL
             url = f"https://www.virustotal.com/api/v3/urls/{encoded_url}"
             report_link = f"https://www.virustotal.com/gui/url/{encoded_url}/detection"
-        else:  # Assuming it's a hash
+        else:  
             url = f"https://www.virustotal.com/api/v3/files/{ioc}"
 
         response = requests.get(url, headers=headers)
@@ -240,7 +236,6 @@ class IOCExtractor(tk.Tk):
                     return f"Error querying VirusTotal: {error_message}"
         data = response.json()
 
-        # Extract relevant information from the response
         if 'data' in data:
             attributes = data['data']['attributes']
             ratio = attributes['last_analysis_stats']
@@ -248,15 +243,13 @@ class IOCExtractor(tk.Tk):
             undetected = ratio['undetected']
 
             last_analysis_date = attributes.get("last_analysis_date")
-        # Convert the Unix timestamp to a readable format, if necessary
+            
             if last_analysis_date:
-                
                 readable_date = datetime.utcfromtimestamp(last_analysis_date).strftime('%Y-%m-%d %H:%M:%S')
             else:
                 readable_date = "No analysis date available."
-
             return f"Malicious: {malicious}, Undetected: {undetected}, \nLast Analysis Date: {readable_date}, Link: {report_link}"
-
+            
         else:
             return "Error querying VirusTotal"
 
@@ -264,31 +257,27 @@ class IOCExtractor(tk.Tk):
         return string.startswith("http://") or string.startswith("https://") or (' ')
     
     def on_vt_button_click(self):
-        # Get the selected IOC(s) from the review_output widget
         iocs = self.review_output.get(tk.SEL_FIRST, tk.SEL_LAST).split('\n')
         
         results = []
         for ioc in iocs:
-            if ioc:  # Check if the string is not empty
+            if ioc:  
                 result = self.query_virustotal(ioc.strip())
                 results.append((ioc, result))
+                
+        self.vt_results_output.configure(state='normal')  
+        self.vt_results_output.delete(1.0, tk.END)  
         
-        # Display the results in the vt_results_output widget
-        self.vt_results_output.configure(state='normal')  # Make it writable
-        self.vt_results_output.delete(1.0, tk.END)  # Clear previous results
         
-        # Define a bold tag
         self.vt_results_output.tag_configure("bold", font=("Arial", 10, "bold"))
         
         for ioc, result in results:
-            # Insert the URL with the bold tag
             self.vt_results_output.insert(tk.END, ioc + ":\n", "bold")
             self.vt_results_output.insert(tk.END, result + "\n\n")
         
         self.vt_results_output.configure(state='disable')
 
     def submit_url_for_analysis(self):
-        # Get the selected URL(s) from the review_output widget
         urls = self.review_output.get(tk.SEL_FIRST, tk.SEL_LAST).split('\n')
         
         headers = {
@@ -297,35 +286,26 @@ class IOCExtractor(tk.Tk):
         }
         
         submit_url_endpoint = "https://www.virustotal.com/api/v3/urls"
-        
-        # Clear the vt_results_output widget and make it writable
         self.vt_results_output.configure(state='normal')
         self.vt_results_output.delete(1.0, tk.END)
-        
-        # Define a bold tag for the widget
         self.vt_results_output.tag_configure("bold", font=("Arial", 10, "bold"))
         
         for url in urls:
-            if url:  # Check if the string is not empty
+            if url:  
                 data = {"url": url.strip()}
                 response = requests.post(submit_url_endpoint, headers=headers, data=data)
                 
                 if response.status_code == 200:
-                    # The URL was successfully submitted for analysis
                     analysis_id = response.json().get("data", {}).get("id", "")
                     analysis_url = f"https://www.virustotal.com/gui/url-analysis/ui-id/{analysis_id}/detection"
-                    # Display the success message and analysis URL in the vt_results_output widget
                     self.vt_results_output.insert(tk.END, f"URL {url}:\n", "bold")
                     self.vt_results_output.insert(tk.END, f"Submitted successfully. Analysis ID: {analysis_id}\n")
                     self.vt_results_output.insert(tk.END, f"Analysis URL: {analysis_url}\n\n")
                 else:
-                    # There was an error submitting the URL
                     error_message = response.json().get('error', {}).get('message', 'Unknown error')
-                    # Display the error message in the vt_results_output widget
                     self.vt_results_output.insert(tk.END, f"URL {url}:\n", "bold")
                     self.vt_results_output.insert(tk.END, f"Error submitting for analysis: {error_message}\n\n")
         
-        # Make the vt_results_output widget read-only again
         self.vt_results_output.configure(state='disable')
 
     def submit_hash_for_analysis(self):
@@ -340,8 +320,8 @@ class IOCExtractor(tk.Tk):
         self.vt_results_output.tag_configure("bold", font=("Arial", 10, "bold"))
 
         for hashing in hashes:
-            hashing = hashing.strip()  # Remove any leading or trailing whitespace
-            if hashing and len(hashing) in (32, 40, 64):  # Ensure it's a valid SHA-256 hash length
+            hashing = hashing.strip()  
+            if hashing and len(hashing) in (32, 40, 64):  
                 submit_url_endpoint = f"https://www.virustotal.com/api/v3/files/{hashing}/analyse"
                 try:
                     response = requests.post(submit_url_endpoint, headers=headers)
@@ -373,11 +353,10 @@ class IOCExtractor(tk.Tk):
         self.vt_results_output.tag_configure("bold", font=("Arial", 10, "bold"))
 
         for hashing in hashes:
-            hashing = hashing.strip()  # Remove any leading or trailing whitespace
-            if hashing and len(hashing) in (32, 40, 64):  # Ensure it's a valid SHA-256 hash length
+            hashing = hashing.strip()  
+            if hashing and len(hashing) in (32, 40, 64):  
                 hash_details = self.get_hash_details(hashing)
                 if "error" not in hash_details:
-                    #self.vt_results_output.insert(tk.END, f"Hash {hashing}:\n", "bold")
                     self.vt_results_output.insert(tk.END, f"MD5: {hash_details['md5']}\n")
                     self.vt_results_output.insert(tk.END, f"SHA-1: {hash_details['sha1']}\n")
                     self.vt_results_output.insert(tk.END, f"SHA-256: {hash_details['sha256']}\n\n")
@@ -392,8 +371,7 @@ class IOCExtractor(tk.Tk):
             "Accept": "application/json",
             "x-apikey": self.VIRUSTOTAL_API_KEY
         }
-        
-        # Endpoint to retrieve file details
+    
         file_info_endpoint = f"https://www.virustotal.com/api/v3/files/{hash_value}"
         
         response = requests.get(file_info_endpoint, headers=headers)
@@ -401,8 +379,6 @@ class IOCExtractor(tk.Tk):
         if response.status_code == 200:
             data = response.json()
             attributes = data.get("data", {}).get("attributes", {})
-            
-            # Extracting associated hashes
             md5 = attributes.get("md5", "Not available")
             sha1 = attributes.get("sha1", "Not available")
             sha256 = attributes.get("sha256", "Not available")
@@ -413,7 +389,6 @@ class IOCExtractor(tk.Tk):
                 "sha256": sha256
             }
         else:
-            # Handle error
             try:
                 error_message = response.json().get('error', {}).get('message', 'Unknown error')
             except ValueError:
@@ -428,8 +403,8 @@ class IOCExtractor(tk.Tk):
         self.vt_results_output.tag_configure("bold", font=("Arial", 10, "bold"))
 
         for ttp in hashes:
-            ttp = ttp.strip()  # Remove any leading or trailing whitespace
-            if ttp and len(ttp) in (32, 40, 64):  # Ensure it's a valid hash length
+            ttp = ttp.strip()  
+            if ttp and len(ttp) in (32, 40, 64):  
                 ttp_details = self.get_mitre_ttp_details(ttp)
                 if "error" not in ttp_details:
                     self.vt_results_output.insert(tk.END, f"Hash {ttp}:\n", "bold")
@@ -452,17 +427,14 @@ class IOCExtractor(tk.Tk):
             "x-apikey": self.VIRUSTOTAL_API_KEY
         }
         
-        # Endpoint to retrieve file details
         ttp_info_endpoint = f"https://www.virustotal.com/api/v3/files/{ttp_value}/behaviour_mitre_trees"
         
         response = requests.get(ttp_info_endpoint, headers=headers)
         
         if response.status_code == 200:
             data = response.json()
-            # Initialize an empty list to store tactics and techniques information
             tactics_techniques_info = []
-
-            # Extracting necessary details from each source
+            
             for source, info in data.get("data", {}).items():
                 source_info = {"source": source, "tactics": []}
                 for tactic in info.get("tactics", []):
@@ -487,7 +459,6 @@ class IOCExtractor(tk.Tk):
 
             return tactics_techniques_info
         else:
-            # Handle error
             try:
                 error_message = response.json().get('error', {}).get('message', 'Unknown error')
             except ValueError:
@@ -542,10 +513,11 @@ class IOCExtractor(tk.Tk):
         return value
     
     def defang(self, value: str) -> str:
-        # Defang the IPs and URLs
-        value = value.replace('.', '[.]')  # Defang IP
+        value = value.replace('.', '[.]') 
         value = value.replace('http', 'hxxp')
-        value = value.replace('https', 'hxxps')  # Defang URL
+        value = value.replace('https', 'hxxps') 
+        value = value.replace("://", '[://]')
+        value = value.replace('@', '[@]')
         return value
         
     def is_filename(self, candidate: str) -> bool:
@@ -575,19 +547,19 @@ class IOCExtractor(tk.Tk):
                 print(f"Found match for {key}: {match.group()}")
 
         for key, regex in regexes.items():
-            matches = regex.finditer(article)  # Use finditer to get match objects with start and end positions
+            matches = regex.finditer(article)  
             
             for match in matches:
-                start_line = article.count('\n', 0, match.start()) + 1  # Calculate the line number of the start of the match
-                start_column = match.start() - article.rfind('\n', 0, match.start()) - 1  # Calculate the column number of the start of the match
-                end_line = article.count('\n', 0, match.end()) + 1  # Calculate the line number of the end of the match
-                end_column = match.end() - article.rfind('\n', 0, match.end()) - 1  # Calculate the column number of the end of the match
+                start_line = article.count('\n', 0, match.start()) + 1  
+                start_column = match.start() - article.rfind('\n', 0, match.start()) - 1 
+                end_line = article.count('\n', 0, match.end()) + 1  
+                end_column = match.end() - article.rfind('\n', 0, match.end()) - 1  
                 
-                start_pos = f"{start_line}.{start_column}"  # Convert start position to Text widget index
-                end_pos = f"{end_line}.{end_column}"  # Convert end position to Text widget index
-                self.article_input.tag_add("highlight", start_pos, end_pos)  # Highlight the matched text
+                start_pos = f"{start_line}.{start_column}"  
+                end_pos = f"{end_line}.{end_column}"  
+                self.article_input.tag_add("highlight", start_pos, end_pos)  
                 
-                iocs[key].add(self.refang(match.group()))  # Add the refanged match to the set of IOC
+                iocs[key].add(self.refang(match.group()))  
 
         for sub_domain in iocs['Sub Domains']:
             parts = sub_domain.split('.')
@@ -610,12 +582,12 @@ class IOCExtractor(tk.Tk):
         domain_cve_filter = [domain for domain in iocs["Domains"] if not any(domain.startswith(cve) for cve in cve_list)]
         iocs['Domains'] = domain_cve_filter
         
-        to_remove = set()  # A set to store domains that need to be removed
+        to_remove = set()  
 
         for sub_domain in iocs['Sub Domains']:
             parts = sub_domain.split('.')
-            if len(parts) >= 3:  # Ensure it's at least a second-level subdomain
-                domain_to_check = '.'.join(parts[:2])  # Take the first two parts and join them
+            if len(parts) >= 3:  
+                domain_to_check = '.'.join(parts[:2]) 
                 if domain_to_check in iocs['Domains']:
                     to_remove.add(domain_to_check)
 
@@ -639,7 +611,6 @@ class IOCExtractor(tk.Tk):
         self.review_output.configure(state='disabled') 
 
     def defang_iocs(self):
-        # Get the content from the review_output widget
         self.review_output.configure(state='normal')
         content = self.review_output.get("1.0", tk.END)
         defanged_content = self.defang(content)
@@ -648,7 +619,6 @@ class IOCExtractor(tk.Tk):
         self.review_output.configure(state='disabled')
 
     def save_input_text(self):
-        # Get the content from the input widget
         input_content = self.article_input.get("1.0", tk.END)
         file_path = tk.filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Text Files", "*.txt"), ("All Files", "*.*")])
 
@@ -661,7 +631,6 @@ class IOCExtractor(tk.Tk):
         tk.messagebox.showinfo("Success", f"Input text has been saved to {os.path.basename(file_path)}")
 
     def save_vt_output(self):
-        # Get the content from the input widget
         input_content = self.vt_results_output.get("1.0", tk.END)
         file_path = tk.filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Text Files", "*.txt"), ("All Files", "*.*")])
 
@@ -677,26 +646,25 @@ class IOCExtractor(tk.Tk):
         content = self.review_output.get("1.0", tk.END)
         file_path = tk.filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Text Files", "*.txt"), ("All Files", "*.*")])
 
-        if not file_path:  # If the user cancels the file dialog
+        if not file_path:  
             return
        
         with open(file_path, 'w') as file:
-            file.write(content.strip())  # strip() is used to remove the trailing newline character
+            file.write(content.strip())  
         
         tk.messagebox.showinfo("Success", f"IOCs have been saved to {os.path.basename(file_path)}")
 
     def save_iocs_to_folder(self):
-        # Ask the user for a directory to save the IOCs
         folder_path = tk.filedialog.askdirectory(title="Select Directory to Save IOCs")
-        if not folder_path:  # If the user cancels the directory dialog
+        if not folder_path: 
             return
         
         folder_name = tk.simpledialog.askstring("Input", "Enter the name for the new folder:")
-        if not folder_name:  # If the user cancels the input dialog or enters an empty string
+        if not folder_name:  
             return
 
         new_folder_path = os.path.join(folder_path, folder_name)
-        os.makedirs(new_folder_path, exist_ok=True)  # exist_ok=True will create the folder if it does not exist
+        os.makedirs(new_folder_path, exist_ok=True) 
 
         content = self.review_output.get("1.0", tk.END).splitlines()
         current_category = None
@@ -710,7 +678,7 @@ class IOCExtractor(tk.Tk):
                         file.write("\n".join(iocs_for_category))
                     iocs_for_category = []
 
-                current_category = line[:-1]  # Remove the trailing ":"
+                current_category = line[:-1]  
             else:
                 iocs_for_category.append(line.strip)
 
@@ -749,7 +717,7 @@ class IOCExtractor(tk.Tk):
             if category_index is not None:
                 for ioc in ioc_list:
                     current_iocs.insert(category_index + 1, "  " + ioc)
-                    category_index += 1  # Update index after each insertion
+                    category_index += 1 
             else:
                 current_iocs.extend([selected_category + ":"])
                 current_iocs.extend(["  " + ioc for ioc in ioc_list])
@@ -793,7 +761,7 @@ class IOCExtractor(tk.Tk):
                 elif category_found and line.strip() in ioc_list:
                     del current_iocs[i]
                     iocs_removed += 1
-                    i -= 1  # Adjust the index since we removed an element
+                    i -= 1  
                 i += 1
 
             if not category_found:
@@ -818,7 +786,7 @@ class IOCExtractor(tk.Tk):
             if not ioc_values:
                 return
 
-            ioc_list = ioc_values.split()  # Split by spaces
+            ioc_list = ioc_values.split() 
             current_iocs = self.review_output.get("1.0", tk.END).splitlines()
             iocs_removed = 0
 
@@ -829,7 +797,7 @@ class IOCExtractor(tk.Tk):
                     if line.strip() == ioc:
                         del current_iocs[i]
                         iocs_removed += 1
-                        i -= 1  # Adjust the index since we removed an element
+                        i -= 1 
                     i += 1
 
             if iocs_removed == 0:
