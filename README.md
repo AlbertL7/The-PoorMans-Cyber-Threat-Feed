@@ -502,32 +502,6 @@ Save all IOCs:
 - Users can press the “Save all IOCs” button to save all extracted IOCs to a specified file.
 Save Individually:
 - Users can press the “Save Individually” button to save the extracted IOCs individually in a newly created folder within a specified directory.
-  
-## Code Structure:
-- Regular Expressions (regexes):
-  - Defined for different types of IOCs.
-- Class IOCExtractor:
-  - __init__(self): Initializes the main GUI components.
-  - refang(self, value: str) -> str: Converts defanged IOCs back to their original form.
-  - defang(self, value: str) -> str: Defangs IOCs to neutralize them.
-  - is_filename(self, candidate: str) -> bool: Checks if a string is a filename.
-  - parse_iocs(self): Parses and highlights the IOCs present in the input text and displays them in the review section.
-  - defang_iocs(self): Defangs the IOCs displayed in the review section.
-  - save_iocs(self): Saves all extracted IOCs to a specified file.
-  - save_iocs_to_folder(self): Saves the extracted IOCs individually to specified files within a newly created folder.
-
-## Future Updates
-- Integrate With MITRE framework to extract TTP's
-- Integrate Virus Total API for quick SHA256 resolution when only SHA1 or MD5 is provided
-- Get rid of File Extension matching or make it an option to match file extensions.
-- Get rid of email matching or make it an option to match emails
-- Add feature to add or remove parsed IOC's
-
-## Contribution:
-Feel free to fork this repository, create a feature branch, and submit a pull request if you have any enhancements or features to add to this tool.
-
-## License:
-This project is open-source, feel free to use, modify and distribute the code considering the proper attributions to the original creator.
 
 Credits:
 Developed by AlbertL7 with help from ChatGPT4
