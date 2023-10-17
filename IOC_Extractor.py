@@ -1,7 +1,7 @@
 # TLD's in the Domains key was pulled from https://data.iana.org/TLD/tlds-alpha-by-domain.txt
-# File Names does not catch files with spaces correctly. Example: "test example.exe" ---> example.exe
+# File Names does not catch files with spaces correctly. Example: "test example.exe" ---> "testexample.exe"
 # Domains does not capture SLD's correctly. Example: "example.uk.co ---> uk.co". 
-# IPv6 Catches everything including time, commented out for now. Uncomment if you want to use it.
+# IPv6 does its job. IPv6 does not account for defanged IPv6 addresses
 # I do not think URLs that have b64 / url / or hex encodeing will get caught and URLs with a double "\\/" as well
 
 import re
