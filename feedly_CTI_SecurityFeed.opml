@@ -96,6 +96,18 @@
             <outline type="rss" text="Industrial Control Systems (ICS) – Security Intelligence" title="Industrial Control Systems (ICS) – Security Intelligence" xmlUrl="https://securityintelligence.com/tag/industrial-control-systems-ics/feed/" htmlUrl="https://securityintelligence.com"/>
             <outline type="rss" text="&quot;SCADA security&quot; - Google News" title="&quot;SCADA security&quot; - Google News" xmlUrl="http://news.google.com/news?svnum=10&amp;as_scoring=r&amp;hl=en&amp;tab=wn&amp;ned=us&amp;aq=f&amp;aq=f&amp;aq=f&amp;q=SCADA+security&amp;ie=UTF-8&amp;nolr=1&amp;output=rss" htmlUrl="https://news.google.com/search?hl=en-US&amp;gl=US&amp;ceid=US:en&amp;q=SCADA+security"/>
         </outline>
+        <outline text="6 CVE Watch" title="6 CVE Watch">
+            <outline type="rss" text="Open Source Security" title="Open Source Security" xmlUrl="http://seclists.org/rss/oss-sec.rss" htmlUrl="https://seclists.org/#oss-sec"/>
+            <outline type="rss" text="CEOE Valladolid" title="CEOE Valladolid" xmlUrl="http://www.cve.es/feed" htmlUrl="https://www.cve.es/cve"/>
+            <outline type="rss" text="CVE Watch" title="CVE Watch" xmlUrl="http://www.reddit.com/r/CVEWatch/.rss" htmlUrl="https://www.reddit.com/r/CVEWatch/"/>
+            <outline type="rss" text="CVEMAP [ Powered by cxsecurity.com ]" title="CVEMAP [ Powered by cxsecurity.com ]" xmlUrl="http://cxsecurity.com/cverss/fullmap/" htmlUrl="https://cxsecurity.com/cveshow/"/>
+            <outline type="rss" text="Newest CVEs from Tenable" title="Newest CVEs from Tenable" xmlUrl="https://www.tenable.com/cve/feeds?sort=newest" htmlUrl="https://www.tenable.com/cve/feeds?sort=newest"/>
+            <outline type="rss" text="Recent Commits to cve:main" title="Recent Commits to cve:main" xmlUrl="https://github.com/trickest/cve/commits/main.atom" htmlUrl="https://github.com/trickest/cve/commits/main"/>
+            <outline type="rss" text="Kubernetes Vulnerability Announcements - CVE Feed" title="Kubernetes Vulnerability Announcements - CVE Feed" xmlUrl="https://kubernetes.io/docs/reference/issues-security/official-cve-feed/index.json" htmlUrl="https://kubernetes.io"/>
+            <outline type="rss" text="Hacker News ≈ Packet Storm" title="Hacker News ≈ Packet Storm" xmlUrl="http://rss.packetstormsecurity.org/news/tags/hacker/" htmlUrl="https://packetstormsecurity.com/"/>
+            <outline type="rss" text="cve-search - tool-set to perform local searches for known vulnerabilities" title="cve-search - tool-set to perform local searches for known vulnerabilities" xmlUrl="https://www.cve-search.org/feed.xml" htmlUrl="https://www.cve-search.org/"/>
+            <outline type="rss" text="Amazon Linux AMI Security Bulletins" title="Amazon Linux AMI Security Bulletins" xmlUrl="https://alas.aws.amazon.com/AL2/alas.rss" htmlUrl="https://alas.aws.amazon.com"/>
+        </outline>
         <outline text="4 Cyber Threat Indicators" title="4 Cyber Threat Indicators">
             <outline type="rss" text="Malicious IPs | By Last Bad Event | Project Honey Pot" title="Malicious IPs | By Last Bad Event | Project Honey Pot" xmlUrl="http://www.projecthoneypot.org/list_of_ips.php?rss=1" htmlUrl="http://www.projecthoneypot.org/list_of_ips.php"/>
         </outline>
