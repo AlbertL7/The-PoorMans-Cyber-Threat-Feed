@@ -465,7 +465,7 @@ Perfect for cybersecurity professionals, threat intelligence analysts, or anyone
 # IOCExtractor
 
 ## Description:
-This application is meant for the purpose of pulling out IOC's from articles found on the internet to reduce manual searching through the article for IOC's. Practicle use is to copy and paste the entire article ((select all)CTRL^A --> (copy selection)CTRL^C --> (paste selection)CTRL^V). The application will highlight all IOC's found in the article once the Parce IOC button is pressed which makes for easy review in case in IOC's were missed.
+This application is meant for the purpose of pulling out IOC's from articles found on the internet to reduce manual searching through the article for IOC's. Practicle use is to copy and paste the entire article ((select all)CTRL^A --> (copy selection)CTRL^C --> (paste selection)CTRL^V). The application will highlight all IOC's found in the article once the Parce IOC button is pressed which makes for easy review in case in IOC's were missed. More information here https://github.com/AlbertL7/IOC-Extractor-GUI
 
 ## Requirements:
 plaintext
