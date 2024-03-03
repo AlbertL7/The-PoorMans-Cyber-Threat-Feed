@@ -14,7 +14,9 @@ Meant to be integrated into Feedly Pro+ with AI string matching, it aggregates t
 
 I recommend once a week to update Feedly filters or add to them based on the newly scraped data to stay informed about emerging threats and addressing potential vulnerabilities promptly.  
 
-- I provided my security rss feed that I use via the ".ompl" file. Use this file by importing it into feedly Pro+, unfortunately this file does not contain the AI contntent.
+- I provided my security rss feed that I use via the ".ompl" file. Use this file by importing it into feedly, unfortunately this file does not contain the AI contntent.
+
+NOTE: When dealing with the AI filters a lot of the time if you word list matchin is 100 to 200 plus you will get booted off the site when creating the filter. For example for China Threat APTs and all of their aliases there are 300+ names that are plugged itno the AI string matchng. while trying to implement this AI filter I kept getting to many request error. Just keep trying it will eventually work!
 
 # Malware Hunter
 
