@@ -5,7 +5,9 @@ A cheap way to keep up to date with all CTI.
 With this tool you can automatically scrape and curate a list of the latest cyber threat actors and malware from Malpedia, leveraging three modules: Malware Hunter, APT Hunter, and IOC Extractor to create a well-rounded threat intelligence feed.
 
 Malware Hunter: Identifies and provides insights on the latest malware and yara.
+
 APT Hunter: Focuses on capturing information on advanced, persistent threats and known aliases.
+
 IOC Extractor: Quickly extracts vital Indicators of Compromise (IoCs).
 
 Meant to be integrated into Feedly Pro+ with AI string matching, it aggregates the most recent IoCs, Tactics, Techniques, Procedures (TTPs), and vulnerabilities, enabling users to stay informed and reinforce security defenses proactively.
