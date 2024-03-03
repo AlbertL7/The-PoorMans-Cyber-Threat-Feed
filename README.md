@@ -1,13 +1,16 @@
 # The PoorMans Cyber Threat Feed
 
-This tool automatically scrapes and curates a list of the latest cyber threat actors and malware from Malpedia, leveraging three modules: Malware Hunter, APT Hunter, and IOC Extractor to create a well-rounded threat intelligence feed.
+A cheap way to keep up to date with all CTI.
 
-Malware Hunter: Identifies and provides insights on the latest malware.
-APT Hunter: Focuses on capturing information on advanced, persistent threats.
+With this tool you can automatically scrape and curate a list of the latest cyber threat actors and malware from Malpedia, leveraging three modules: Malware Hunter, APT Hunter, and IOC Extractor to create a well-rounded threat intelligence feed.
+
+Malware Hunter: Identifies and provides insights on the latest malware and yara.
+APT Hunter: Focuses on capturing information on advanced, persistent threats and known aliases.
 IOC Extractor: Quickly extracts vital Indicators of Compromise (IoCs).
-When Integrated into Feedly Pro+ AI string matching, it aggregates the most recent IoCs, Tactics, Techniques, Procedures (TTPs), and vulnerabilities, enabling users to stay informed and reinforce security defenses proactively.
 
-Recommended use is once a week to update Feedly filters or to perform VirusTotal retro hunts based on discovered YARA rules for the investigated malware. This tool aids organizations and individuals in enhancing their security posture by staying informed about emerging threats and addressing potential vulnerabilities promptly.  
+Meant to be integrated into Feedly Pro+ with AI string matching, it aggregates the most recent IoCs, Tactics, Techniques, Procedures (TTPs), and vulnerabilities, enabling users to stay informed and reinforce security defenses proactively.
+
+I recommend once a week to update Feedly filters or add to them based on the newly scraped data to stay informed about emerging threats and addressing potential vulnerabilities promptly.  
 
 # Malware Hunter
 
@@ -390,16 +393,6 @@ rule win_ariabody_auto {
 [+] Enter the number corresponding to the malware you want to explore:
 ```
 
-## Functionality Overview
-
-1. main(): The main function parses command-line arguments and calls the appropriate functions based on the provided arguments.
-2. top_malware_strains(): Makes requests to Malpedia to get the top malware strains and returns sorted malware data.
-3. user_select_malware(): Allows the user to interactively select malware and calls functions to display descriptions or Yara rules based on user input.
-4. get_malware_description(): Retrieves and displays the description of the selected malware.
-5. get_malware_yara(): Retrieves and displays the Yara rule of the selected malware.
-6. URL_Encoded_feedly_filter(): Generates and prints the URL encoded Feedly filter.
-7. clear_text_feedly_filter(): Generates and prints the clear text Feedly filter.
-
 ## Contribution
 
 Feel free to fork the project and submit pull requests for any enhancements or bug fixes. If you encounter any issues or have suggestions for improvements, please open an issue in the repository.
@@ -420,7 +413,7 @@ Feel free to fork the project and submit pull requests for any enhancements or b
 # APT Hunter
 
 ## Breif overview 
-Harness the power of open-source intelligence by leveraging this script to automatically scrape and curate a list of cyber threat actors based on specified countries. Designed to tap into the vast data pool of malpedia.caad.fkie.fraunhofer.de, it retrieves a list of actors, their respective aliases, and constructs a custom filter URL for Feedly Pro+.
+Automatically scrape and curate a list of cyber threat actors based on specified countries. Uses malpedia.caad.fkie.fraunhofer.de, it retrieves a list of actors, their respective aliases, and constructs a custom filter URL for Feedly Pro+.
 
 📌 Features:
 
