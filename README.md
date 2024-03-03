@@ -502,6 +502,9 @@ Save all IOCs:
 Save Individually:
 - Users can press the “Save Individually” button to save the extracted IOCs individually in a newly created folder within a specified directory.
 
+# Future Feature Implementation
+- Darknet scraping for data leaks / hacker talk. Need further development on this, possibly implement AI somehow. https://github.com/AlbertL7/Scrape-the-Dark-Web
+
 Credits:
 Developed by AlbertL7 with help from ChatGPT4
 
