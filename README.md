@@ -14,6 +14,8 @@ Meant to be integrated into Feedly Pro+ with AI string matching, it aggregates t
 
 I recommend once a week to update Feedly filters or add to them based on the newly scraped data to stay informed about emerging threats and addressing potential vulnerabilities promptly.  
 
+- I provided my security rss feed that I use via the ".ompl" file. Use this file by importing it into feedly Pro+
+
 # Malware Hunter
 
 ## Overview
