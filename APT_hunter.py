@@ -131,7 +131,7 @@ def feedly_filter(flat_list):
 
     encoded_filter = base64.b64encode(new_feedly_filter.encode()).decode() # encode feedly filter to b64 
 
-    feedly_filter_url = f"https://feedly.com/i/powerSearch/in?options={encoded_filter}" # create feedly url
+    feedly_filter_url = f"https://feedly.com/i/aiFeeds?options={encoded_filter}" # create feedly url
 
     print(Fore.GREEN+"\n[+] Your cusstom Feedly Filter URL:"+Style.RESET_ALL, Style.BRIGHT+feedly_filter_url+Style.RESET_ALL,"\n\n",Fore.GREEN+"[+] Filter output Clear Text:" + Style.RESET_ALL,Style.BRIGHT + new_feedly_filter + Style.RESET_ALL,"\n")
 
